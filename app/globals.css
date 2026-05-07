@@ -1,0 +1,237 @@
+@import "tailwindcss";
+
+:root {
+  --gun-darkest: #1c2128;
+  --gun-dark: #2d3440;
+  --gun-mid: #4b5563;
+  --gun-light: #6b7280;
+  --gun-mist: #9ca3af;
+  --cream: #f5f4f0;
+  --white: #ffffff;
+  --gold: #c9a84c;
+  --gold-light: #e8d5a3;
+  --background: var(--cream);
+  --foreground: var(--gun-darkest);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-gun-darkest: var(--gun-darkest);
+  --color-gun-dark: var(--gun-dark);
+  --color-gun-mid: var(--gun-mid);
+  --color-gun-light: var(--gun-light);
+  --color-gun-mist: var(--gun-mist);
+  --color-cream: var(--cream);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-playfair);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-playfair), "Georgia", serif;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.section-label {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.divider-gold {
+  width: 3rem;
+  height: 1px;
+  background: var(--gold);
+  margin: 1.5rem 0;
+}
+
+.btn-primary {
+  display: inline-block;
+  padding: 0.875rem 2.5rem;
+  background: var(--gun-darkest);
+  color: var(--white);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
+  border: 1px solid var(--gun-darkest);
+}
+
+.btn-primary:hover {
+  background: transparent;
+  color: var(--gun-darkest);
+}
+
+.btn-outline {
+  width: 180px;
+  height: 50px;
+  display: inline-block;
+  padding: 0.875rem 2.5rem;
+  background: transparent;
+  color: var(--white);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--white);
+}
+
+.btn-gold {
+  width: 180px;
+  height: 50px;
+  display: inline-block;
+  padding: 0.875rem 2.5rem;
+  background: linear-gradient(145deg, #ffd20b, #554a32);
+  color: var(--white);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.3s ease;
+  border: 1px solid var(--gold);
+  cursor: pointer;
+}
+
+.btn-gold:hover {
+  background: #e6bf42;
+  border-color: #e6bf42;
+}
+
+.cursor-box {
+  width: 180px;
+  height: 50px;
+  background-color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.75rem;
+  transition: all 0.3s ease;
+  text-align: center;
+  padding: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.cursor-box::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  top: -100%;
+  left: -100%;
+  transition: all 0.5s ease;
+}
+
+.cursor-box:hover::before {
+  top: 100%;
+  left: 100%;
+}
+
+input,
+textarea,
+select {
+  font-family: var(--font-inter), sans-serif;
+}
+
+a,
+button,
+select,
+label[for],
+[role="button"] {
+  cursor: pointer;
+}
+
+/* Nav underline animation */
+.nav-link {
+  position: relative;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--white);
+  transition: color 0.2s;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--gold);
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Fade-in animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeInUp 1.2s ease forwards;
+}
+
+.animate-delay-200 {
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+.animate-delay-400 {
+  animation-delay: 0.4s;
+  opacity: 0;
+}
+.animate-delay-600 {
+  animation-delay: 0.6s;
+  opacity: 0;
+}
