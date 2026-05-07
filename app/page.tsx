@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 import Navigation from "./components/Navigation";
 import Hero from "./components/Hero";
+import ScrollSnap from "./components/ScrollSnap";
 import { getAllProperties, getHeroVideoUrl, getLocationImages } from "../lib/datocms";
 
 const About = dynamic(() => import("./components/About"));
@@ -19,6 +20,7 @@ export default async function Home() {
 
   return (
     <>
+      <ScrollSnap />
       <Navigation />
       <main>
         <Hero videoUrl={heroVideoUrl} />
