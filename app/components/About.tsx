@@ -24,9 +24,8 @@ export default function About() {
     return () => observer.disconnect();
   }, []);
 
-  // Parallax: while Properties is sliding up over About (scroll range naturalTop
-  // → naturalTop + height), drift the inner grid upward at ~35% scroll speed.
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const section = sectionRef.current;
     const inner = innerRef.current;
     if (!section || !inner) return;
@@ -44,6 +43,7 @@ export default function About() {
     <section
       ref={sectionRef}
       id="vision"
+      aria-labelledby="about-heading"
       className="about-section"
       style={{
         position: "sticky",
@@ -75,6 +75,7 @@ export default function About() {
           <p className="section-label">Lorem Ipsum</p>
           <div className="divider-gold" />
           <h2
+            id="about-heading"
             style={{
               fontFamily: "var(--font-playfair)",
               fontSize: "clamp(2rem, 4vw, 3rem)",
@@ -212,8 +213,11 @@ export default function About() {
           .about-accent-card > div:first-child { font-size: 2rem !important; }
         }
 
+        @media (prefers-reduced-motion: reduce) {
+          .about-text, .about-cards { transition: none !important; opacity: 1 !important; transform: none !important; }
+          .about-main-card, .about-accent-card { transition: none !important; }
+        }
         @media (min-width: 769px) {
-        /* Initial hidden state — both elements start invisible before the section enters view */
         .about-text {
           opacity: 0;
           transform: translateY(60px);

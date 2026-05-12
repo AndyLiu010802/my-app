@@ -5,7 +5,7 @@ import { useRef, useEffect } from "react";
 const features = [
   {
     icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <svg aria-hidden="true" width="32" height="32" viewBox="0 0 32 32" fill="none">
         <rect x="4" y="20" width="24" height="3" rx="1" stroke="currentColor" strokeWidth="1.5"/>
         <rect x="8" y="12" width="16" height="8" rx="1" stroke="currentColor" strokeWidth="1.5"/>
         <line x1="16" y1="4" x2="16" y2="12" stroke="currentColor" strokeWidth="1.5"/>
@@ -18,7 +18,7 @@ const features = [
   },
   {
     icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <svg aria-hidden="true" width="32" height="32" viewBox="0 0 32 32" fill="none">
         <circle cx="16" cy="16" r="10" stroke="currentColor" strokeWidth="1.5"/>
         <path d="M16 8 C16 8 22 13 22 17 C22 20.3 19.3 23 16 23 C12.7 23 10 20.3 10 17 C10 13 16 8 16 8Z" stroke="currentColor" strokeWidth="1.5"/>
       </svg>
@@ -29,7 +29,7 @@ const features = [
   },
   {
     icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <svg aria-hidden="true" width="32" height="32" viewBox="0 0 32 32" fill="none">
         <rect x="4" y="10" width="24" height="16" rx="2" stroke="currentColor" strokeWidth="1.5"/>
         <path d="M10 10V7C10 5.3 11.3 4 13 4H19C20.7 4 22 5.3 22 7V10" stroke="currentColor" strokeWidth="1.5"/>
         <line x1="16" y1="14" x2="16" y2="22" stroke="currentColor" strokeWidth="1.5"/>
@@ -42,7 +42,7 @@ const features = [
   },
   {
     icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <svg aria-hidden="true" width="32" height="32" viewBox="0 0 32 32" fill="none">
         <path d="M16 4L28 10V22L16 28L4 22V10L16 4Z" stroke="currentColor" strokeWidth="1.5"/>
         <circle cx="16" cy="16" r="4" stroke="currentColor" strokeWidth="1.5"/>
       </svg>
@@ -53,7 +53,7 @@ const features = [
   },
   {
     icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <svg aria-hidden="true" width="32" height="32" viewBox="0 0 32 32" fill="none">
         <path d="M6 26C6 20.477 10.477 16 16 16C21.523 16 26 20.477 26 26" stroke="currentColor" strokeWidth="1.5"/>
         <circle cx="16" cy="10" r="5" stroke="currentColor" strokeWidth="1.5"/>
         <line x1="6" y1="6" x2="10" y2="10" stroke="currentColor" strokeWidth="1.5"/>
@@ -66,7 +66,7 @@ const features = [
   },
   {
     icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+      <svg aria-hidden="true" width="32" height="32" viewBox="0 0 32 32" fill="none">
         <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="1.5"/>
         <path d="M16 8V16L20 20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
       </svg>
@@ -98,8 +98,8 @@ export default function Amenities() {
     return () => observer.disconnect();
   }, []);
 
-  // Parallax: inner content drifts up at ~40% speed as Location slides over Amenities
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const section = sectionRef.current;
     const inner = innerRef.current;
     if (!section || !inner) return;
@@ -116,6 +116,7 @@ export default function Amenities() {
     <section
       ref={sectionRef}
       id="features"
+      aria-labelledby="amenities-heading"
       className="amenities-section"
       style={{
         position: "sticky",
@@ -139,6 +140,7 @@ export default function Amenities() {
           <p className="section-label">Lorem Ipsum Dolor</p>
           <div className="divider-gold" />
           <h2
+            id="amenities-heading"
             style={{
               fontFamily: "var(--font-playfair)",
               fontSize: "clamp(2rem, 2vw, 3rem)",
@@ -256,6 +258,10 @@ export default function Amenities() {
         .amenities-in-view .amenities-grid {
           opacity: 1;
           transform: translateY(0);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .amenities-header, .amenities-grid { transition: none !important; opacity: 1 !important; transform: none !important; }
         }
 
         @media (min-width: 1025px) and (max-width: 1536px) {

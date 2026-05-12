@@ -21,11 +21,7 @@ export default function ScrollSnap() {
       return top;
     };
 
-    // Returns the section index the user is on.
-    // Returns sections.length (a virtual "footer" index) when scrolled past
-    // the last section's snap point by more than half a viewport — this lets
-    // trigger(-1) snap cleanly back to the last section (Enquiry) instead of
-    // skipping it and landing on the one before (Picture).
+    // Returns sections.length when scrolled into footer territory
     const currentIndex = (sections: HTMLElement[]): number => {
       const sy = window.scrollY;
       if (sections.length > 0) {
@@ -48,6 +44,10 @@ export default function ScrollSnap() {
       );
     };
 
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const scrollBehavior: ScrollBehavior = reducedMotion ? "instant" : "smooth";
+    const lockMs = reducedMotion ? 100 : 1000;
+
     let locked = false;
 
     const trigger = (dir: 1 | -1) => {
@@ -55,12 +55,11 @@ export default function ScrollSnap() {
       const sections = getSections();
       const current = currentIndex(sections);
 
-      // Footer territory: only snap back to Enquiry on upward scroll
       if (current === sections.length) {
         if (dir === -1) {
           locked = true;
-          window.scrollTo({ top: scrollTopFor(sections[sections.length - 1]), behavior: "smooth" });
-          setTimeout(() => { locked = false; }, 1000);
+          window.scrollTo({ top: scrollTopFor(sections[sections.length - 1]), behavior: scrollBehavior });
+          setTimeout(() => { locked = false; }, lockMs);
         }
         return;
       }
@@ -68,8 +67,8 @@ export default function ScrollSnap() {
       const next = Math.max(0, Math.min(current + dir, sections.length - 1));
       if (next === current) return;
       locked = true;
-      window.scrollTo({ top: scrollTopFor(sections[next]), behavior: "smooth" });
-      setTimeout(() => { locked = false; }, 1000);
+      window.scrollTo({ top: scrollTopFor(sections[next]), behavior: scrollBehavior });
+      setTimeout(() => { locked = false; }, lockMs);
     };
 
     const onWheel = (e: WheelEvent) => {
@@ -87,15 +86,12 @@ export default function ScrollSnap() {
       const sections = getSections();
       const current = currentIndex(sections);
 
-      // In footer territory
       if (current === sections.length) {
         if (dir === -1) { e.preventDefault(); trigger(dir); }
-        // Scrolling further down in footer: allow natural scroll
         return;
       }
 
       const next = Math.max(0, Math.min(current + dir, sections.length - 1));
-      // At a boundary (e.g. last section scrolling down into footer): allow natural scroll
       if (next === current) return;
 
       e.preventDefault();

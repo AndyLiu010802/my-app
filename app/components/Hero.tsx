@@ -7,10 +7,10 @@ export default function Hero({ videoUrl }: { videoUrl: string | null }) {
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const section = sectionRef.current;
     const content = contentRef.current;
     if (!section || !content) return;
-
 
     const handleScroll = () => {
       const naturalTop =
@@ -34,6 +34,7 @@ export default function Hero({ videoUrl }: { videoUrl: string | null }) {
     <section
       ref={sectionRef}
       id="hero"
+      aria-labelledby="hero-heading"
       style={{
         position: "sticky",
         top: 0,
@@ -46,8 +47,8 @@ export default function Hero({ videoUrl }: { videoUrl: string | null }) {
         background: "#1C2128",
       }}
     >
-      {/* Video background */}
       <video
+        aria-hidden="true"
         autoPlay
         muted
         loop
@@ -65,51 +66,10 @@ export default function Hero({ videoUrl }: { videoUrl: string | null }) {
         {videoUrl && <source src={videoUrl} type="video/mp4" />}
       </video>
 
-      {/* Dark overlay */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background: "rgba(20, 25, 32, 0.68)",
-          zIndex: 1,
-        }}
-      />
-
-      {/* Subtle gold radial glow — adds warmth on the left side of the frame */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage:
-            "radial-gradient(ellipse at 30% 50%, rgba(201,168,76,0.06) 0%, transparent 60%)",
-          zIndex: 2,
-        }}
-      />
-      {/* Geometric accent line */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          right: "15%",
-          width: "1px",
-          height: "40vh",
-          background:
-            "linear-gradient(to bottom, transparent, rgba(201,168,76,0.5), transparent)",
-          zIndex: 2,
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: "20%",
-          width: "1px",
-          height: "35vh",
-          background:
-            "linear-gradient(to top, transparent, rgba(201,168,76,0.3), transparent)",
-          zIndex: 2,
-        }}
-      />
+      <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "rgba(20, 25, 32, 0.68)", zIndex: 1 }} />
+      <div aria-hidden="true" style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(ellipse at 30% 50%, rgba(201,168,76,0.06) 0%, transparent 60%)", zIndex: 2 }} />
+      <div aria-hidden="true" style={{ position: "absolute", top: 0, right: "15%", width: "1px", height: "40vh", background: "linear-gradient(to bottom, transparent, rgba(201,168,76,0.5), transparent)", zIndex: 2 }} />
+      <div aria-hidden="true" style={{ position: "absolute", bottom: 0, left: "20%", width: "1px", height: "35vh", background: "linear-gradient(to top, transparent, rgba(201,168,76,0.3), transparent)", zIndex: 2 }} />
 
       {/* Content — ref'd for parallax scroll offset */}
       <div
@@ -132,6 +92,7 @@ export default function Hero({ videoUrl }: { videoUrl: string | null }) {
         </div>
 
         <h1
+          id="hero-heading"
           className="animate-fade-up animate-delay-200"
           style={{
             fontFamily: "var(--font-playfair)",
@@ -231,7 +192,7 @@ export default function Hero({ videoUrl }: { videoUrl: string | null }) {
                   fontWeight: 500,
                   letterSpacing: "0.2em",
                   textTransform: "uppercase",
-                  color: "rgba(255,255,255,0.45)",
+                  color: "rgba(255,255,255,0.65)",
                 }}
               >
                 {stat.label}
@@ -241,8 +202,8 @@ export default function Hero({ videoUrl }: { videoUrl: string | null }) {
         </div>
       </div>
 
-      {/* Scroll indicator */}
       <div
+        aria-hidden="true"
         style={{
           position: "absolute",
           bottom: "2.5rem",

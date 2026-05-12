@@ -61,7 +61,7 @@ export default function Footer() {
               style={{
                 fontFamily: "var(--font-inter)",
                 fontSize: "0.85rem",
-                color: "rgba(255,255,255,0.38)",
+                color: "rgba(255,255,255,0.6)",
                 lineHeight: 1.8,
                 marginBottom: "2rem",
               }}
@@ -76,7 +76,7 @@ export default function Footer() {
                 {
                   label: "Instagram",
                   icon: (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                       <rect x="2" y="2" width="20" height="20" rx="5"/>
                       <circle cx="12" cy="12" r="4"/>
                       <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
@@ -86,7 +86,7 @@ export default function Footer() {
                 {
                   label: "LinkedIn",
                   icon: (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                       <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/>
                       <rect x="2" y="9" width="4" height="12"/>
                       <circle cx="4" cy="4" r="2"/>
@@ -96,7 +96,7 @@ export default function Footer() {
                 {
                   label: "Facebook",
                   icon: (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                       <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
                     </svg>
                   ),
@@ -113,7 +113,7 @@ export default function Footer() {
                     justifyContent: "center",
                     border: "1px solid rgba(255,255,255,0.1)",
                     background: "transparent",
-                    color: "rgba(255,255,255,0.4)",
+                    color: "rgba(255,255,255,0.6)",
                     cursor: "pointer",
                     transition: "border-color 0.3s, color 0.3s",
                   }}
@@ -125,7 +125,7 @@ export default function Footer() {
                   onMouseOut={(e) => {
                     const el = e.currentTarget as HTMLButtonElement;
                     el.style.borderColor = "rgba(255,255,255,0.1)";
-                    el.style.color = "rgba(255,255,255,0.4)";
+                    el.style.color = "rgba(255,255,255,0.6)";
                   }}
                 >
                   {social.icon}
@@ -158,7 +158,7 @@ export default function Footer() {
                       style={{
                         fontFamily: "var(--font-inter)",
                         fontSize: "0.82rem",
-                        color: "rgba(255,255,255,0.4)",
+                        color: "rgba(255,255,255,0.6)",
                         textDecoration: "none",
                         transition: "color 0.2s",
                       }}
@@ -168,7 +168,7 @@ export default function Footer() {
                       }}
                       onMouseOut={(e) => {
                         (e.currentTarget as HTMLAnchorElement).style.color =
-                          "rgba(255,255,255,0.4)";
+                          "rgba(255,255,255,0.6)";
                       }}
                     >
                       {link}
@@ -205,7 +205,7 @@ export default function Footer() {
             style={{
               fontFamily: "var(--font-inter)",
               fontSize: "0.72rem",
-              color: "rgba(255,255,255,0.22)",
+              color: "rgba(255,255,255,0.5)",
               lineHeight: 1.6,
             }}
           >
@@ -216,7 +216,7 @@ export default function Footer() {
             style={{
               fontFamily: "var(--font-inter)",
               fontSize: "0.72rem",
-              color: "rgba(255,255,255,0.22)",
+              color: "rgba(255,255,255,0.5)",
             }}
           >
             Lorem ipsum dolor sit amet consectetur adipiscing elit sed do

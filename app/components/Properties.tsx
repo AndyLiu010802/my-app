@@ -41,6 +41,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
     <section
       id="residences"
       ref={sectionRef}
+      aria-labelledby="properties-heading"
       className="props-section"
       style={{
         position: "sticky",
@@ -79,6 +80,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
           }}
         >
           <h2
+            id="properties-heading"
             style={{
               fontFamily: "var(--font-playfair)",
               fontSize: "clamp(2rem, 4vw, 3rem)",
@@ -133,6 +135,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
           {carouselItems.map((property, index) => (
             <div
               key={index}
+              aria-hidden={index >= properties.length ? "true" : undefined}
               className="props-card"
               style={{
                 width: `${CARD_W}px`,
@@ -216,7 +219,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
                       fontSize: "0.6rem",
                       letterSpacing: "0.15em",
                       textTransform: "uppercase",
-                      color: "rgba(255,255,255,0.35)",
+                      color: "rgba(255,255,255,0.6)",
                       marginBottom: "0.25rem",
                     }}
                   >
@@ -272,6 +275,10 @@ export default function Properties({ properties }: { properties: Property[] }) {
       @keyframes props-scroll {
         from { transform: translateX(0); }
         to   { transform: translateX(-50%); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .props-track { animation: none !important; }
+        .props-header, .props-carousel { transition: none !important; opacity: 1 !important; transform: none !important; }
       }
       .props-track {
         animation-name: props-scroll;

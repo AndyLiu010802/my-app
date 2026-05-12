@@ -25,7 +25,7 @@ function validate(f: FormData) {
         : "",
     phone: f.phone.trim() ? "" : "Phone number is required",
     message: f.message.trim() ? "" : "Please include a message",
-    project: "", // optional — no validation required
+    project: "",
   };
 }
 
@@ -34,7 +34,7 @@ const contactInfo = [
     label: "Office",
     value: "123 Lorem Street, Melbourne VIC 3000",
     icon: (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
         <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6.2C3.5 9.7 8 14.5 8 14.5C8 14.5 12.5 9.7 12.5 6.2C12.5 3.5 10.5 1.5 8 1.5Z" stroke="currentColor" strokeWidth="1.2" />
         <circle cx="8" cy="6" r="1.6" stroke="currentColor" strokeWidth="1.2" />
       </svg>
@@ -44,7 +44,7 @@ const contactInfo = [
     label: "Phone",
     value: "+61 3 1234 5678",
     icon: (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
         <path d="M3 3.5C3 3.5 4 2 5 2C6 2 6.5 3 7 4C7.5 5 7 5.5 6.5 6C7 7 9 9 10 9.5C10.5 9 11 8.5 12 9C13 9.5 14 10 14 11C14 12 12.5 13 12.5 13C11 14 4.5 8 3 5C2.5 3.5 3 3.5 3 3.5Z" stroke="currentColor" strokeWidth="1.2" />
       </svg>
     ),
@@ -53,7 +53,7 @@ const contactInfo = [
     label: "Email",
     value: "enquiries@lorem.com.au",
     icon: (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
         <rect x="1.5" y="3.5" width="13" height="9" rx="1" stroke="currentColor" strokeWidth="1.2" />
         <path d="M1.5 5.5L8 9.5L14.5 5.5" stroke="currentColor" strokeWidth="1.2" />
       </svg>
@@ -71,12 +71,14 @@ export default function Enquiry() {
 
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const successRef = useRef<HTMLHeadingElement>(null);
 
   const errors = validate(form);
   const err = (f: keyof typeof errors) =>
     (touched[f] || submitAttempted) ? errors[f] : "";
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (!window.matchMedia("(min-width: 1025px)").matches) return;
     const section = sectionRef.current;
     const content = contentRef.current;
@@ -89,6 +91,12 @@ export default function Enquiry() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    if (submitted && successRef.current) {
+      successRef.current.focus();
+    }
+  }, [submitted]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
@@ -130,17 +138,17 @@ export default function Enquiry() {
     setSubmitError("");
   };
 
-  /* ── Reusable text-input field ── */
   const Field = ({
     name, label, type = "text", autoComplete,
   }: {
     name: keyof FormData; label: string; type?: string; autoComplete?: string;
   }) => {
     const e = err(name);
+    const errId = `eq-${name}-err`;
     return (
       <div className="eq-field">
         <label className={`eq-label${e ? " eq-label-err" : ""}`} htmlFor={`eq-${name}`}>
-          {label} <span className="eq-req">*</span>
+          {label} <span className="eq-req" aria-hidden="true">*</span>
         </label>
         <input
           id={`eq-${name}`}
@@ -151,13 +159,16 @@ export default function Enquiry() {
           onBlur={handleBlur}
           className={`eq-input${e ? " eq-input-err" : ""}`}
           autoComplete={autoComplete}
+          aria-required="true"
+          aria-invalid={e ? true : undefined}
+          aria-describedby={errId}
         />
         <div className="eq-bar">
           <div className={`eq-bar-fill${e ? " eq-bar-err" : ""}`} />
         </div>
         {e ? (
-          <span className="eq-err-msg">
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ flexShrink: 0 }}>
+          <span id={errId} role="alert" className="eq-err-msg">
+            <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ flexShrink: 0 }}>
               <circle cx="5" cy="5" r="4" stroke="currentColor" strokeWidth="1" />
               <line x1="5" y1="3" x2="5" y2="5.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
               <circle cx="5" cy="7.2" r="0.5" fill="currentColor" />
@@ -165,7 +176,7 @@ export default function Enquiry() {
             {e}
           </span>
         ) : (
-          <span className="eq-err-msg eq-err-placeholder" />
+          <span id={errId} className="eq-err-msg eq-err-placeholder" aria-hidden="true" />
         )}
       </div>
     );
@@ -175,6 +186,7 @@ export default function Enquiry() {
     <section
       ref={sectionRef}
       id="contact"
+      aria-labelledby="enquiry-heading"
       className="enquiry-section"
       style={{
         position: "sticky",
@@ -189,8 +201,7 @@ export default function Enquiry() {
         boxShadow: "0 -12px 40px rgba(0,0,0,0.35)",
       }}
     >
-      {/* Decorative top gold line */}
-      <div style={{
+      <div aria-hidden="true" style={{
         position: "absolute", top: 0, left: "50%",
         width: "1px", height: "6rem",
         background: "linear-gradient(to bottom, transparent, rgba(201,168,76,0.5))",
@@ -204,7 +215,7 @@ export default function Enquiry() {
             <div className="eq-info">
               <p className="section-label">Lorem Ipsum</p>
               <div className="divider-gold" />
-              <h2 style={{
+              <h2 id="enquiry-heading" style={{
                 fontFamily: "var(--font-playfair)",
                 fontSize: "clamp(2rem, 3.5vw, 3.2rem)",
                 fontWeight: 400,
@@ -229,11 +240,10 @@ export default function Enquiry() {
                 ad minim veniam, quis nostrud exercitation ullamco laboris.
               </p>
 
-              {/* Contact tiles */}
               <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", marginBottom: "2.5rem" }}>
                 {contactInfo.map((item) => (
                   <div key={item.label} style={{ display: "flex", alignItems: "flex-start", gap: "1rem" }}>
-                    <div className="eq-contact-icon">{item.icon}</div>
+                    <div className="eq-contact-icon" aria-hidden="true">{item.icon}</div>
                     <div>
                       <div style={{
                         fontFamily: "var(--font-inter)",
@@ -257,7 +267,6 @@ export default function Enquiry() {
                 ))}
               </div>
 
-              {/* Response note */}
               <div className="eq-note">
                 <p style={{
                   fontFamily: "var(--font-inter)",
@@ -274,20 +283,24 @@ export default function Enquiry() {
             {/* ── Right: form ── */}
             <div className="eq-form-wrap">
               {submitted ? (
-                /* Success state */
                 <div style={{ textAlign: "center", padding: "4rem 2rem" }}>
-                  <div className="eq-success-icon">
+                  <div className="eq-success-icon" aria-hidden="true">
                     <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
                       <path d="M4 13L10 19L22 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </div>
-                  <h3 style={{
-                    fontFamily: "var(--font-playfair)",
-                    fontSize: "2rem",
-                    fontWeight: 400,
-                    color: "var(--gun-darkest)",
-                    marginBottom: "1rem",
-                  }}>
+                  <h3
+                    ref={successRef}
+                    tabIndex={-1}
+                    style={{
+                      fontFamily: "var(--font-playfair)",
+                      fontSize: "2rem",
+                      fontWeight: 400,
+                      color: "var(--gun-darkest)",
+                      marginBottom: "1rem",
+                      outline: "none",
+                    }}
+                  >
                     Enquiry Sent
                   </h3>
                   <p style={{
@@ -309,19 +322,16 @@ export default function Enquiry() {
               ) : (
                 <form onSubmit={handleSubmit} noValidate>
 
-                  {/* Name row */}
                   <div className="eq-row-2">
                     <Field name="firstname" label="First Name" autoComplete="given-name" />
                     <Field name="lastname" label="Last Name" autoComplete="family-name" />
                   </div>
 
-                  {/* Contact row */}
                   <div className="eq-row-2">
                     <Field name="email" label="Email Address" type="email" autoComplete="email" />
                     <Field name="phone" label="Phone Number" type="tel" autoComplete="tel" />
                   </div>
 
-                  {/* Project select */}
                   <div className="eq-field">
                     <label className="eq-label eq-label-static" htmlFor="eq-project">
                       Project Interest
@@ -342,7 +352,7 @@ export default function Enquiry() {
                         <option value="investment">Investment Property</option>
                         <option value="commercial">Commercial</option>
                       </select>
-                      <div className="eq-select-chevron">
+                      <div className="eq-select-chevron" aria-hidden="true">
                         <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
                           <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
                         </svg>
@@ -351,16 +361,15 @@ export default function Enquiry() {
                     <div className="eq-bar">
                       <div className="eq-bar-fill" />
                     </div>
-                    <span className="eq-err-msg eq-err-placeholder" />
+                    <span className="eq-err-msg eq-err-placeholder" aria-hidden="true" />
                   </div>
 
-                  {/* Message textarea */}
                   <div className="eq-field">
                     <label
                       className={`eq-label${err("message") ? " eq-label-err" : ""}`}
                       htmlFor="eq-message"
                     >
-                      Your Message <span className="eq-req">*</span>
+                      Your Message <span className="eq-req" aria-hidden="true">*</span>
                     </label>
                     <textarea
                       id="eq-message"
@@ -370,13 +379,16 @@ export default function Enquiry() {
                       onBlur={handleBlur}
                       rows={4}
                       className={`eq-input eq-textarea${err("message") ? " eq-input-err" : ""}`}
+                      aria-required="true"
+                      aria-invalid={err("message") ? true : undefined}
+                      aria-describedby="eq-message-err"
                     />
                     <div className="eq-bar">
                       <div className={`eq-bar-fill${err("message") ? " eq-bar-err" : ""}`} />
                     </div>
                     {err("message") ? (
-                      <span className="eq-err-msg">
-                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ flexShrink: 0 }}>
+                      <span id="eq-message-err" role="alert" className="eq-err-msg">
+                        <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" fill="none" style={{ flexShrink: 0 }}>
                           <circle cx="5" cy="5" r="4" stroke="currentColor" strokeWidth="1" />
                           <line x1="5" y1="3" x2="5" y2="5.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
                           <circle cx="5" cy="7.2" r="0.5" fill="currentColor" />
@@ -384,27 +396,29 @@ export default function Enquiry() {
                         {err("message")}
                       </span>
                     ) : (
-                      <span className="eq-err-msg eq-err-placeholder" />
+                      <span id="eq-message-err" className="eq-err-msg eq-err-placeholder" aria-hidden="true" />
                     )}
                   </div>
 
-                  {/* Submit */}
                   <button type="submit" className="eq-submit" disabled={submitting}>
                     <span>{submitting ? "Sending…" : "Send Enquiry"}</span>
                     {!submitting && (
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none">
                         <path d="M2 8H14M9 3L14 8L9 13" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     )}
                   </button>
                   {submitError && (
-                    <p style={{
-                      fontFamily: "var(--font-inter)",
-                      fontSize: "0.75rem",
-                      color: "rgba(210,70,70,0.9)",
-                      marginTop: "0.75rem",
-                      textAlign: "center",
-                    }}>
+                    <p
+                      role="alert"
+                      style={{
+                        fontFamily: "var(--font-inter)",
+                        fontSize: "0.75rem",
+                        color: "rgba(210,70,70,0.9)",
+                        marginTop: "0.75rem",
+                        textAlign: "center",
+                      }}
+                    >
                       {submitError}
                     </p>
                   )}
@@ -417,7 +431,6 @@ export default function Enquiry() {
       </div>
 
       <style>{`
-        /* ── Layout ── */
         .enquiry-grid {
           display: grid;
           grid-template-columns: 1fr 1.5fr;
@@ -431,7 +444,6 @@ export default function Enquiry() {
           gap: 3rem;
         }
 
-        /* ── Contact icon tile ── */
         .eq-contact-icon {
           width: 36px;
           height: 36px;
@@ -445,26 +457,23 @@ export default function Enquiry() {
         }
         .eq-contact-icon:hover { background: var(--gun-darkest); }
 
-        /* ── Response note ── */
         .eq-note {
           padding: 1rem 1.25rem;
           border-left: 2px solid var(--gold);
           background: rgba(201,168,76,0.04);
         }
 
-        /* ── Field wrapper ── */
         .eq-field {
           margin-bottom: 0.25rem;
         }
 
-        /* ── Label ── */
         .eq-label {
           display: block;
           font-family: var(--font-inter);
           font-size: 0.65rem;
           letter-spacing: 0.16em;
           text-transform: uppercase;
-          color:var(--gun-darkest) ;
+          color: var(--gun-darkest);
           margin-bottom: 0.6rem;
           transition: color 0.25s ease;
         }
@@ -475,7 +484,6 @@ export default function Enquiry() {
         .eq-field:focus-within .eq-label-static { color: var(--gold); }
         .eq-req { color: var(--gold); opacity: 0.8; }
 
-        /* ── Input base ── */
         .eq-input {
           display: block;
           width: 100%;
@@ -492,8 +500,8 @@ export default function Enquiry() {
         }
         .eq-input::placeholder { color: var(--gun-darkest); }
         .eq-input-err::placeholder { color: rgba(210,70,70,0.3); }
+        .eq-input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
-        /* ── Animated underline bar ── */
         .eq-bar {
           position: relative;
           height: 1px;
@@ -514,7 +522,6 @@ export default function Enquiry() {
           transform: scaleX(1) !important;
         }
 
-        /* ── Error message ── */
         .eq-err-msg {
           display: flex;
           align-items: center;
@@ -528,7 +535,6 @@ export default function Enquiry() {
         }
         .eq-err-placeholder { visibility: hidden; }
 
-        /* ── Select ── */
         .eq-select-wrap {
           position: relative;
         }
@@ -555,13 +561,11 @@ export default function Enquiry() {
           transform: translateY(-50%) rotate(180deg);
         }
 
-        /* ── Textarea ── */
         .eq-textarea {
           resize: none;
           line-height: 1.75;
         }
 
-        /* ── Submit button ── */
         .eq-submit {
           display: flex;
           align-items: center;
@@ -591,8 +595,11 @@ export default function Enquiry() {
           opacity: 0.65;
           cursor: not-allowed;
         }
+        .eq-submit:focus-visible {
+          outline: 2px solid var(--gold);
+          outline-offset: 3px;
+        }
 
-        /* ── Success icon ── */
         .eq-success-icon {
           width: 64px;
           height: 64px;
@@ -610,7 +617,15 @@ export default function Enquiry() {
           to   { transform: scale(1);   opacity: 1; }
         }
 
-        /* ── Responsive ── */
+        @media (prefers-reduced-motion: reduce) {
+          .eq-success-icon { animation: none; }
+          .eq-bar-fill { transition: none; }
+          .eq-submit { transition: none; }
+          .eq-label { transition: none; }
+          .eq-select-chevron { transition: none; }
+          .eq-contact-icon { transition: none; }
+        }
+
         @media (min-width: 1025px) and (max-width: 1536px) {
           .enquiry-section { padding: 3rem 0 !important; }
           .eq-container    { padding: 0 5rem !important; max-width: 1100px !important; }

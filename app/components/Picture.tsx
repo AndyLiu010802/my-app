@@ -67,6 +67,7 @@ export default function Location({ images }: { images: string[] }) {
     <section
       ref={sectionRef}
       id="location"
+      aria-label="Location"
       style={{
         position: "sticky",
         top: 0,
@@ -77,16 +78,8 @@ export default function Location({ images }: { images: string[] }) {
         boxShadow: "0 -12px 40px rgba(0,0,0,0.35)",
       }}
     >
-      {/* Cinematic dark stage */}
-      <div className={`loc-stage${phase === "settled" ? " loc-stage-out" : ""}`} />
-
-      {/*
-        Bullet strips — flex column so they stack perfectly to fill 100vh.
-        Each strip fires independently with a tiny top-to-bottom stagger.
-        Wide strips (>100vw): you see photo content flash past (streak).
-        Narrow strips (<100vw): both leading & trailing edges briefly visible (bullet silhouette).
-      */}
-      <div className="bullets-wrap">
+      <div aria-hidden="true" className={`loc-stage${phase === "settled" ? " loc-stage-out" : ""}`} />
+      <div aria-hidden="true" className="bullets-wrap">
         {STRIPS.map((s, i) => (
           <div
             key={i}
@@ -101,7 +94,7 @@ export default function Location({ images }: { images: string[] }) {
               src={images[s.img]}
               alt=""
               fill
-              style={{ objectFit: "cover", objectPosition: "center" }}
+              style={{ objectFit: "cover", objectPosition: "center" }} 
               sizes="160vw"
               priority={i === 0}
               placeholder="blur"
@@ -111,11 +104,10 @@ export default function Location({ images }: { images: string[] }) {
         ))}
       </div>
 
-      {/* Winner photo — expands from a central inset after strips have cleared */}
       <div className={`loc-bg${phase === "settled" ? " loc-bg-in" : ""}`}>
         <Image
           src={images[winner]}
-          alt="Property"
+          alt="Location"
           fill
           sizes="100vw"
           style={{ objectFit: "cover", objectPosition: "center" }}
@@ -129,8 +121,7 @@ export default function Location({ images }: { images: string[] }) {
         />
       </div>
 
-      {/* Luxury scenic overlay */}
-      <div className={`loc-overlay${phase === "settled" ? " loc-overlay-in" : ""}`}>
+      <div aria-hidden="true" className={`loc-overlay${phase === "settled" ? " loc-overlay-in" : ""}`}>
         <div className="loc-vignette" />
         <div className="loc-grad-top" />
         <div className="loc-grad-bottom" />
@@ -264,6 +255,13 @@ export default function Location({ images }: { images: string[] }) {
         }
         .loc-gold-ornament::before { left:  -7px; }
         .loc-gold-ornament::after  { right: -7px; }
+
+        @media (prefers-reduced-motion: reduce) {
+          .ltr.bullet-fire, .rtl.bullet-fire { animation: none !important; transform: translateX(200vw) !important; }
+          .loc-bg { transition: none !important; clip-path: inset(0px round 0px) !important; animation: none !important; }
+          .loc-overlay { transition: none !important; opacity: 1 !important; }
+          .loc-stage { transition: none !important; opacity: 0 !important; }
+        }
 
         /* ── Mobile ── */
         @media (max-width: 768px) {

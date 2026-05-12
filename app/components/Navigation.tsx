@@ -148,10 +148,12 @@ export default function Navigation() {
           }}
           className="mobile-menu-btn"
           aria-label="Toggle menu"
+          aria-expanded={menuOpen}
         >
           {[0, 1, 2].map((i) => (
             <span
               key={i}
+              aria-hidden="true"
               style={{
                 display: "block",
                 width: "24px",
