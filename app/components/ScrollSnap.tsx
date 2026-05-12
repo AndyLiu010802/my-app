@@ -5,16 +5,9 @@ import { useEffect } from "react";
 export default function ScrollSnap() {
   useEffect(() => {
     const getSections = (): HTMLElement[] => {
-      const sections = Array.from(document.querySelectorAll<HTMLElement>("main > section"));
-      const footer = document.querySelector<HTMLElement>("footer");
-      return footer ? [...sections, footer] : sections;
+      return Array.from(document.querySelectorAll<HTMLElement>("main > section"));
     };
 
-    // Compute the exact scrollY needed to bring a section to the top.
-    // Mirrors Navigation.tsx's scrollToSection — the only approach that works
-    // for position:sticky stacks (scrollIntoView is a no-op because the browser
-    // considers a sticky element already "in view" even when hidden behind another).
-    // Footer is outside <main> so its target is simply the bottom of the page.
     const scrollTopFor = (section: HTMLElement): number => {
       if (!section.closest("main")) {
         return Math.max(0, document.body.scrollHeight - window.innerHeight);
@@ -28,8 +21,17 @@ export default function ScrollSnap() {
       return top;
     };
 
+    // Returns the section index the user is on.
+    // Returns sections.length (a virtual "footer" index) when scrolled past
+    // the last section's snap point by more than half a viewport — this lets
+    // trigger(-1) snap cleanly back to the last section (Enquiry) instead of
+    // skipping it and landing on the one before (Picture).
     const currentIndex = (sections: HTMLElement[]): number => {
       const sy = window.scrollY;
+      if (sections.length > 0) {
+        const lastStart = scrollTopFor(sections[sections.length - 1]);
+        if (sy > lastStart + window.innerHeight * 0.5) return sections.length;
+      }
       let idx = 0;
       for (let i = 0; i < sections.length; i++) {
         if (scrollTopFor(sections[i]) <= sy + 10) idx = i;
@@ -52,16 +54,26 @@ export default function ScrollSnap() {
       if (locked) return;
       const sections = getSections();
       const current = currentIndex(sections);
+
+      // Footer territory: only snap back to Enquiry on upward scroll
+      if (current === sections.length) {
+        if (dir === -1) {
+          locked = true;
+          window.scrollTo({ top: scrollTopFor(sections[sections.length - 1]), behavior: "smooth" });
+          setTimeout(() => { locked = false; }, 1000);
+        }
+        return;
+      }
+
       const next = Math.max(0, Math.min(current + dir, sections.length - 1));
-      if (next === current) return; // at boundary — don't lock
+      if (next === current) return;
       locked = true;
       window.scrollTo({ top: scrollTopFor(sections[next]), behavior: "smooth" });
       setTimeout(() => { locked = false; }, 1000);
     };
 
     const onWheel = (e: WheelEvent) => {
-      e.preventDefault(); // always block native scroll on this full-page layout
-      if (locked) return;
+      if (locked) { e.preventDefault(); return; }
       if (isFormActive()) return;
 
       const raw =
@@ -70,7 +82,24 @@ export default function ScrollSnap() {
         e.deltaY;
 
       if (Math.abs(raw) < 5) return;
-      trigger(raw > 0 ? 1 : -1);
+
+      const dir = raw > 0 ? 1 : -1;
+      const sections = getSections();
+      const current = currentIndex(sections);
+
+      // In footer territory
+      if (current === sections.length) {
+        if (dir === -1) { e.preventDefault(); trigger(dir); }
+        // Scrolling further down in footer: allow natural scroll
+        return;
+      }
+
+      const next = Math.max(0, Math.min(current + dir, sections.length - 1));
+      // At a boundary (e.g. last section scrolling down into footer): allow natural scroll
+      if (next === current) return;
+
+      e.preventDefault();
+      trigger(dir);
     };
 
     let touchStartY = NaN;

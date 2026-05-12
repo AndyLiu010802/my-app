@@ -302,7 +302,7 @@ export default function Properties({ properties }: { properties: Property[] }) {
         .props-card-img { height: 180px !important; }
       }
       @media (min-width: 768px) {
-        
+
         /* Initial hidden state — elements start low and invisible */
         .props-header {
           opacity: 0;

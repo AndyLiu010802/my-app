@@ -96,7 +96,7 @@ export default function Enquiry() {
   const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setTouched(t => ({ ...t, [e.target.name]: true }));
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitAttempted(true);
     if (Object.values(errors).some(Boolean)) return;

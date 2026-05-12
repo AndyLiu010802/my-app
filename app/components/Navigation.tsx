@@ -20,10 +20,7 @@ export default function Navigation() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Native browser anchor scrolling breaks with position:sticky — the browser sees
-  // stuck sections already at top:0 and treats backward navigation as a no-op.
-  // Instead, compute the natural scroll position by summing preceding siblings' heights.
-  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMenuOpen(false);
     if (href === "#") { window.scrollTo({ top: 0, behavior: "smooth" }); return; }

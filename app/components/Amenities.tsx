@@ -159,7 +159,7 @@ export default function Amenities() {
         <div
           style={{
             display: "grid",
-           
+
             gridTemplateColumns: "repeat(3, 1fr)",
             gap: "0",
           }}
