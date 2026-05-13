@@ -1,8 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+
+type PropType = "All" | "House" | "Apartment" | "Townhouse" | "Land";
+type PriceKey = "Any" | "sub1m" | "1m2m" | "2m5m" | "5mplus";
 
 const navLinks = [
   { label: "Lorem", href: "#vision" },
@@ -28,12 +31,112 @@ const menuItems = [
   { label: "Contact", href: "/contact" },
 ];
 
+// ── Icons ──────────────────────────────────────────────────────────────────────
+const SearchIcon = () => (
+  <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+    <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+  </svg>
+);
+
+const MiniChevron = () => (
+  <svg aria-hidden="true" width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+    <path d="M2 3.5l3 3 3-3"/>
+  </svg>
+);
+
+// ── Compact pill select (used in navbar search bar) ────────────────────────────
+function NavSelect({ label, value, active, onChange, children }: {
+  label: string; value: string; active: boolean;
+  onChange: (v: string) => void; children: React.ReactNode;
+}) {
+  return (
+    <div style={{ position: "relative", flexShrink: 0 }}>
+      <label style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap" }}>
+        {label}
+      </label>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        style={{
+          height: "2.1rem",
+          background: active ? "rgba(201,168,76,0.12)" : "rgba(255,255,255,0.06)",
+          border: `1px solid ${active ? "rgba(201,168,76,0.4)" : "rgba(255,255,255,0.1)"}`,
+          borderRadius: "100px",
+          color: active ? "var(--gold)" : "rgba(237,232,223,0.65)",
+          fontFamily: "var(--font-inter)", fontSize: "0.6rem",
+          fontWeight: active ? 500 : 400,
+          letterSpacing: "0.06em",
+          padding: "0 1.65rem 0 0.85rem",
+          appearance: "none", WebkitAppearance: "none",
+          cursor: "pointer", outline: "none",
+          transition: "background 0.2s, border-color 0.2s, color 0.2s",
+        }}
+      >
+        {children}
+      </select>
+      <div style={{
+        position: "absolute", right: "0.45rem", top: "50%",
+        transform: "translateY(-50%)", pointerEvents: "none",
+        color: active ? "var(--gold)" : "rgba(237,232,223,0.42)",
+      }}>
+        <MiniChevron />
+      </div>
+    </div>
+  );
+}
+
+// ── Panel select (used in mobile slide-out) ────────────────────────────────────
+function PanelSelect({ label, value, active, onChange, children }: {
+  label: string; value: string; active: boolean;
+  onChange: (v: string) => void; children: React.ReactNode;
+}) {
+  return (
+    <div style={{ position: "relative" }}>
+      <label style={{ display: "block", fontFamily: "var(--font-inter)", fontSize: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(237,232,223,0.52)", marginBottom: "0.35rem" }}>
+        {label}
+      </label>
+      <div style={{ position: "relative" }}>
+        <select
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          style={{
+            width: "100%", height: "2.6rem",
+            background: active ? "rgba(201,168,76,0.08)" : "rgba(255,255,255,0.04)",
+            border: `1px solid ${active ? "rgba(201,168,76,0.35)" : "rgba(255,255,255,0.1)"}`,
+            borderRadius: "6px",
+            color: active ? "var(--gold)" : "rgba(237,232,223,0.75)",
+            fontFamily: "var(--font-inter)", fontSize: "0.72rem",
+            padding: "0 2.2rem 0 0.9rem",
+            appearance: "none", WebkitAppearance: "none",
+            cursor: "pointer", outline: "none",
+          }}
+        >
+          {children}
+        </select>
+        <div style={{ position: "absolute", right: "0.7rem", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", color: active ? "var(--gold)" : "rgba(237,232,223,0.42)" }}>
+          <MiniChevron />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Main component ─────────────────────────────────────────────────────────────
 export default function Navigation() {
   const pathname                           = usePathname();
   const isHome                             = pathname === "/";
+  const isBuy                              = pathname === "/buy";
+  const router                             = useRouter();
+
   const [scrolled, setScrolled]           = useState(false);
   const [menuOpen, setMenuOpen]           = useState(false);
   const [aboutExpanded, setAboutExpanded] = useState(false);
+
+  // Buy page filter state — pushed to URL, read by BuyPageClient via useSearchParams
+  const [buyQ, setBuyQ]         = useState("");
+  const [buyType, setBuyType]   = useState<PropType>("All");
+  const [buyBeds, setBuyBeds]   = useState("0");
+  const [buyPrice, setBuyPrice] = useState<PriceKey>("Any");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -53,6 +156,40 @@ export default function Navigation() {
   }, [menuOpen]);
 
   useEffect(() => { setMenuOpen(false); }, [pathname]);
+
+  // Sync filter state from URL when navigating to /buy (handles direct load or back navigation)
+  useEffect(() => {
+    if (!isBuy) {
+      setBuyQ(""); setBuyType("All"); setBuyBeds("0"); setBuyPrice("Any");
+      return;
+    }
+    const params = new URLSearchParams(window.location.search);
+    setBuyQ(params.get("q") ?? "");
+    setBuyType((params.get("type") ?? "All") as PropType);
+    setBuyBeds(params.get("beds") ?? "0");
+    setBuyPrice((params.get("price") ?? "Any") as PriceKey);
+  }, [isBuy, pathname]);
+
+  const pushFilters = (overrides: { q?: string; type?: string; beds?: string; price?: string }) => {
+    const q     = "q"     in overrides ? overrides.q!     : buyQ;
+    const type  = "type"  in overrides ? overrides.type!  : buyType;
+    const beds  = "beds"  in overrides ? overrides.beds!  : buyBeds;
+    const price = "price" in overrides ? overrides.price! : buyPrice;
+    const params = new URLSearchParams();
+    if (q)              params.set("q", q);
+    if (type  !== "All") params.set("type", type);
+    if (beds  !== "0")   params.set("beds", beds);
+    if (price !== "Any") params.set("price", price);
+    const qs = params.toString();
+    router.replace(`/buy${qs ? "?" + qs : ""}`, { scroll: false });
+  };
+
+  const clearBuyFilters = () => {
+    setBuyQ(""); setBuyType("All"); setBuyBeds("0"); setBuyPrice("Any");
+    router.replace("/buy", { scroll: false });
+  };
+
+  const buyActiveCount = [!!buyQ, buyType !== "All", buyBeds !== "0", buyPrice !== "Any"].filter(Boolean).length;
 
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
@@ -84,36 +221,31 @@ export default function Navigation() {
           right: "clamp(0.75rem, 3vw, 2.25rem)",
           zIndex: 100,
           borderRadius: "100px",
-          background: scrolled
-            ? "rgba(12, 16, 23, 0.97)"
-            : "rgba(12, 16, 23, 0.82)",
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
-          border: scrolled
-            ? "1px solid rgba(255,255,255,0.13)"
-            : "1px solid rgba(255,255,255,0.08)",
-          boxShadow: scrolled
-            ? "0 12px 56px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.07) inset"
-            : "0 6px 32px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.04) inset",
-          transition: "background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease",
+          background: scrolled ? "rgba(68, 81, 107, 0.98)" : "rgba(40, 47, 61, 0.98)",
+          backdropFilter: "blur(28px)",
+          WebkitBackdropFilter: "blur(28px)",
+          opacity: scrolled ? 0.9 : 0.7,
+          transition: "background 0.35s ease, box-shadow 0.35s ease",
         }}
       >
-        <div style={{ padding: "0 1.4rem", height: "3.75rem", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem" }}>
+        <div style={{ padding: "0 1.4rem", height: "3.75rem", display: "flex", alignItems: "center", gap: "1rem" }}>
 
           {/* Logo */}
-          {isHome ? (
-            <a href="#" onClick={(e) => scrollToSection(e, "#")} style={{ textDecoration: "none", flexShrink: 0 }}>
-              {logoEl}
-            </a>
-          ) : (
-            <Link href="/" style={{ textDecoration: "none", flexShrink: 0 }}>
-              {logoEl}
-            </Link>
-          )}
+          <div style={{ flexShrink: 0 }}>
+            {isHome ? (
+              <a href="#" onClick={(e) => scrollToSection(e, "#")} style={{ textDecoration: "none" }}>
+                {logoEl}
+              </a>
+            ) : (
+              <Link href="/" style={{ textDecoration: "none" }}>
+                {logoEl}
+              </Link>
+            )}
+          </div>
 
           {/* Desktop anchor nav — homepage only */}
           {isHome && (
-            <nav className="pill-desktop-nav" aria-label="Main navigation" style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
+            <nav className="pill-desktop-nav" aria-label="Main navigation" style={{ display: "flex", alignItems: "center", gap: "2rem", flex: 1 }}>
               {navLinks.map((link) => (
                 <a key={link.href} href={link.href} className="nav-link" onClick={(e) => scrollToSection(e, link.href)}>
                   {link.label}
@@ -145,42 +277,148 @@ export default function Navigation() {
             </nav>
           )}
 
-          {/* Hamburger pill button */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={menuOpen}
-            style={{
-              background: menuOpen ? "rgba(255,255,255,0.06)" : "transparent",
-              border: "1px solid rgba(255,255,255,0.15)",
-              borderRadius: "100px",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.55rem",
-              padding: "0.5rem 0.9rem",
-              flexShrink: 0,
-              transition: "background 0.2s, border-color 0.2s",
-            }}
-            onMouseOver={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.32)"; }}
-            onMouseOut={(e)  => { if (!menuOpen) (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.15)"; }}
-          >
-            {menuOpen ? (
-              <svg aria-hidden="true" width="16" height="16" viewBox="0 0 20 20" fill="none">
-                <line x1="3" y1="3" x2="17" y2="17" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
-                <line x1="17" y1="3" x2="3"  y2="17" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
-              </svg>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "4px", alignItems: "flex-end" }}>
-                <span aria-hidden="true" style={{ display: "block", width: "18px", height: "1px", background: "#fff" }} />
-                <span aria-hidden="true" style={{ display: "block", width: "12px", height: "1px", background: "var(--gold)" }} />
-                <span aria-hidden="true" style={{ display: "block", width: "18px", height: "1px", background: "#fff" }} />
+          {/* Buy page inline search bar — desktop only */}
+          {isBuy && (
+            <div
+              className="buy-nav-search-bar"
+              role="search"
+              aria-label="Search properties"
+              style={{ flex: 1, display: "flex", alignItems: "center", gap: "0.5rem" }}
+            >
+              {/* Text search */}
+              <div style={{ position: "relative", flex: "1 1 0", minWidth: 0 }}>
+                <span style={{ position: "absolute", left: "0.65rem", top: "50%", transform: "translateY(-50%)", color: "rgba(237,232,223,0.42)", pointerEvents: "none", display: "flex" }}>
+                  <SearchIcon />
+                </span>
+                <input
+                  type="search"
+                  aria-label="Search suburb or address"
+                  placeholder="Suburb or address…"
+                  value={buyQ}
+                  onChange={(e) => { setBuyQ(e.target.value); pushFilters({ q: e.target.value }); }}
+                  style={{
+                    width: "100%", height: "2.1rem",
+                    background: "rgba(255,255,255,0.06)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: "100px",
+                    color: "#fff", fontFamily: "var(--font-inter)", fontSize: "0.62rem",
+                    padding: "0 0.85rem 0 2.1rem",
+                    outline: "none", transition: "border-color 0.2s",
+                  }}
+                  onFocus={(e) => { e.currentTarget.style.borderColor = "rgba(201,168,76,0.5)"; }}
+                  onBlur={(e)  => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
+                />
               </div>
+
+              {/* Type */}
+              <NavSelect label="Property type" value={buyType} active={buyType !== "All"} onChange={(v) => { setBuyType(v as PropType); pushFilters({ type: v }); }}>
+                <option value="All">Type</option>
+                <option value="House">House</option>
+                <option value="Apartment">Apt</option>
+                <option value="Townhouse">T/H</option>
+                <option value="Land">Land</option>
+              </NavSelect>
+
+              {/* Beds */}
+              <NavSelect label="Min bedrooms" value={buyBeds} active={buyBeds !== "0"} onChange={(v) => { setBuyBeds(v); pushFilters({ beds: v }); }}>
+                <option value="0">Beds</option>
+                <option value="2">2+</option>
+                <option value="3">3+</option>
+                <option value="4">4+</option>
+                <option value="5">5+</option>
+              </NavSelect>
+
+              {/* Price */}
+              <NavSelect label="Price range" value={buyPrice} active={buyPrice !== "Any"} onChange={(v) => { setBuyPrice(v as PriceKey); pushFilters({ price: v }); }}>
+                <option value="Any">Price</option>
+                <option value="sub1m">&lt;$1M</option>
+                <option value="1m2m">$1–2M</option>
+                <option value="2m5m">$2–5M</option>
+                <option value="5mplus">$5M+</option>
+              </NavSelect>
+
+              {/* Clear */}
+              {buyActiveCount > 0 && (
+                <button
+                  onClick={clearBuyFilters}
+                  aria-label="Clear all filters"
+                  style={{
+                    background: "none", border: "1px solid rgba(255,255,255,0.15)",
+                    borderRadius: "100px", color: "rgba(237,232,223,0.55)",
+                    fontFamily: "var(--font-inter)", fontSize: "0.52rem",
+                    letterSpacing: "0.08em", padding: "0 0.8rem", height: "2.1rem",
+                    cursor: "pointer", flexShrink: 0,
+                    display: "flex", alignItems: "center", gap: "0.3rem",
+                    whiteSpace: "nowrap", transition: "border-color 0.2s, color 0.2s",
+                  }}
+                  onMouseOver={(e) => { const el = e.currentTarget; el.style.borderColor = "var(--gold)"; el.style.color = "var(--gold)"; }}
+                  onMouseOut={(e)  => { const el = e.currentTarget; el.style.borderColor = "rgba(255,255,255,0.15)"; el.style.color = "rgba(237,232,223,0.55)"; }}
+                >
+                  <svg aria-hidden="true" width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><line x1="1" y1="1" x2="9" y2="9"/><line x1="9" y1="1" x2="1" y2="9"/></svg>
+                  Clear
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Spacer for non-home, non-buy pages */}
+          {!isHome && !isBuy && <div style={{ flex: 1 }} />}
+
+          {/* Hamburger pill button with active-filter badge */}
+          <div style={{ position: "relative", flexShrink: 0 }}>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+              style={{
+                background: menuOpen ? "rgba(255,255,255,0.06)" : "transparent",
+                border: "1px solid rgba(255,255,255,0.15)",
+                borderRadius: "100px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.55rem",
+                padding: "0.5rem 0.9rem",
+                transition: "background 0.2s, border-color 0.2s",
+              }}
+              onMouseOver={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.32)"; }}
+              onMouseOut={(e)  => { if (!menuOpen) (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.15)"; }}
+            >
+              {menuOpen ? (
+                <svg aria-hidden="true" width="16" height="16" viewBox="0 0 20 20" fill="none">
+                  <line x1="3" y1="3" x2="17" y2="17" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
+                  <line x1="17" y1="3" x2="3"  y2="17" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: "4px", alignItems: "flex-end" }}>
+                  <span aria-hidden="true" style={{ display: "block", width: "18px", height: "1px", background: "#fff" }} />
+                  <span aria-hidden="true" style={{ display: "block", width: "12px", height: "1px", background: "var(--gold)" }} />
+                  <span aria-hidden="true" style={{ display: "block", width: "18px", height: "1px", background: "#fff" }} />
+                </div>
+              )}
+              <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.58rem", fontWeight: 500, color: "rgba(255,255,255,0.75)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                Menu
+              </span>
+            </button>
+
+            {/* Active filter count badge */}
+            {isBuy && buyActiveCount > 0 && (
+              <span
+                aria-label={`${buyActiveCount} active filter${buyActiveCount > 1 ? "s" : ""}`}
+                style={{
+                  position: "absolute", top: "-5px", right: "-5px",
+                  width: "17px", height: "17px",
+                  background: "var(--gold)", borderRadius: "50%",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontFamily: "var(--font-inter)", fontSize: "0.45rem",
+                  fontWeight: 700, color: "#000",
+                  pointerEvents: "none",
+                }}
+              >
+                {buyActiveCount}
+              </span>
             )}
-            <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.58rem", fontWeight: 500, color: "rgba(255,255,255,0.75)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-              Menu
-            </span>
-          </button>
+          </div>
         </div>
       </header>
 
@@ -236,6 +474,90 @@ export default function Navigation() {
           </button>
         </div>
 
+        {/* ── Mobile property search filters (buy page only) ─────────────── */}
+        {isBuy && (
+          <div style={{ padding: "1.5rem 2rem", borderBottom: "1px solid rgba(255,255,255,0.06)", flexShrink: 0 }}>
+            <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.55rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "var(--gold)" }}>Search Properties</span>
+            <div style={{ width: "2rem", height: "1px", background: "var(--gold)", marginTop: "0.6rem", opacity: 0.5, marginBottom: "1.1rem" }} aria-hidden="true" />
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
+              {/* Search input */}
+              <div>
+                <label style={{ display: "block", fontFamily: "var(--font-inter)", fontSize: "0.5rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(237,232,223,0.52)", marginBottom: "0.35rem" }}>
+                  Suburb or Address
+                </label>
+                <div style={{ position: "relative" }}>
+                  <span style={{ position: "absolute", left: "0.75rem", top: "50%", transform: "translateY(-50%)", color: "rgba(237,232,223,0.38)", pointerEvents: "none", display: "flex" }}>
+                    <SearchIcon />
+                  </span>
+                  <input
+                    type="search"
+                    placeholder="Toorak, Southbank…"
+                    value={buyQ}
+                    onChange={(e) => { setBuyQ(e.target.value); pushFilters({ q: e.target.value }); }}
+                    style={{
+                      width: "100%", height: "2.6rem",
+                      background: "rgba(255,255,255,0.04)",
+                      border: "1px solid rgba(255,255,255,0.1)",
+                      borderRadius: "6px",
+                      color: "#fff", fontFamily: "var(--font-inter)", fontSize: "0.72rem",
+                      padding: "0 0.9rem 0 2.2rem",
+                      outline: "none",
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Type + Beds row */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+                <PanelSelect label="Property Type" value={buyType} active={buyType !== "All"} onChange={(v) => { setBuyType(v as PropType); pushFilters({ type: v }); }}>
+                  <option value="All">All Types</option>
+                  <option value="House">House</option>
+                  <option value="Apartment">Apartment</option>
+                  <option value="Townhouse">Townhouse</option>
+                  <option value="Land">Land</option>
+                </PanelSelect>
+
+                <PanelSelect label="Min Bedrooms" value={buyBeds} active={buyBeds !== "0"} onChange={(v) => { setBuyBeds(v); pushFilters({ beds: v }); }}>
+                  <option value="0">Any Beds</option>
+                  <option value="2">2+ Beds</option>
+                  <option value="3">3+ Beds</option>
+                  <option value="4">4+ Beds</option>
+                  <option value="5">5+ Beds</option>
+                </PanelSelect>
+              </div>
+
+              {/* Price */}
+              <PanelSelect label="Price Range" value={buyPrice} active={buyPrice !== "Any"} onChange={(v) => { setBuyPrice(v as PriceKey); pushFilters({ price: v }); }}>
+                <option value="Any">Any Price</option>
+                <option value="sub1m">Under $1M</option>
+                <option value="1m2m">$1M – $2M</option>
+                <option value="2m5m">$2M – $5M</option>
+                <option value="5mplus">$5M+</option>
+              </PanelSelect>
+
+              {/* Clear */}
+              {buyActiveCount > 0 && (
+                <button
+                  onClick={() => { clearBuyFilters(); setMenuOpen(false); }}
+                  style={{
+                    background: "none", border: "1px solid rgba(255,255,255,0.12)",
+                    borderRadius: "6px", color: "rgba(237,232,223,0.55)",
+                    fontFamily: "var(--font-inter)", fontSize: "0.6rem",
+                    letterSpacing: "0.15em", textTransform: "uppercase",
+                    padding: "0.7rem 1rem", cursor: "pointer",
+                    transition: "border-color 0.2s, color 0.2s",
+                  }}
+                  onMouseOver={(e) => { const el = e.currentTarget; el.style.borderColor = "var(--gold)"; el.style.color = "var(--gold)"; }}
+                  onMouseOut={(e)  => { const el = e.currentTarget; el.style.borderColor = "rgba(255,255,255,0.12)"; el.style.color = "rgba(237,232,223,0.55)"; }}
+                >
+                  Clear Filters ({buyActiveCount})
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Nav label */}
         <div style={{ padding: "2rem 2rem 1rem", flexShrink: 0 }}>
           <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.55rem", letterSpacing: "0.28em", textTransform: "uppercase", color: "var(--gold)" }}>Navigation</span>
@@ -258,7 +580,7 @@ export default function Navigation() {
                         <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.58rem", color: "var(--gold)", letterSpacing: "0.1em", minWidth: "1.5rem" }}>0{i + 1}</span>
                         <span style={{ fontFamily: "var(--font-playfair)", fontSize: "clamp(1.2rem, 4vw, 1.5rem)", fontWeight: 400, color: "#fff", letterSpacing: "0.02em" }}>{item.label}</span>
                       </div>
-                      <svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ transition: "transform 0.3s", transform: aboutExpanded ? "rotate(180deg)" : "none", color: "rgba(255,255,255,0.4)", flexShrink: 0 }}>
+                      <svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ transition: "transform 0.3s", transform: aboutExpanded ? "rotate(180deg)" : "none", color: "rgba(237,232,223,0.65)", flexShrink: 0 }}>
                         <path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
                       </svg>
                     </button>
@@ -269,9 +591,9 @@ export default function Navigation() {
                             <Link
                               href={child.href}
                               onClick={() => setMenuOpen(false)}
-                              style={{ fontFamily: "var(--font-inter)", fontSize: "0.78rem", color: "rgba(255,255,255,0.45)", textDecoration: "none", letterSpacing: "0.1em", display: "flex", alignItems: "center", gap: "0.5rem" }}
+                              style={{ fontFamily: "var(--font-inter)", fontSize: "0.78rem", color: "rgba(237,232,223,0.68)", textDecoration: "none", letterSpacing: "0.1em", display: "flex", alignItems: "center", gap: "0.5rem" }}
                               onMouseOver={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "var(--gold)"; }}
-                              onMouseOut={(e)  => { (e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.45)"; }}
+                              onMouseOut={(e)  => { (e.currentTarget as HTMLAnchorElement).style.color = "rgba(237,232,223,0.68)"; }}
                             >
                               <span aria-hidden="true" style={{ width: "4px", height: "4px", background: "var(--gold)", borderRadius: "50%", flexShrink: 0, opacity: 0.6 }} />
                               {child.label}
@@ -292,7 +614,7 @@ export default function Navigation() {
                       <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.58rem", color: "var(--gold)", letterSpacing: "0.1em", minWidth: "1.5rem" }}>0{i + 1}</span>
                       <span className="menu-item-label" style={{ fontFamily: "var(--font-playfair)", fontSize: "clamp(1.2rem, 4vw, 1.5rem)", fontWeight: 400, color: "#fff", letterSpacing: "0.02em", transition: "color 0.2s" }}>{item.label}</span>
                     </div>
-                    <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ color: "rgba(255,255,255,0.2)", flexShrink: 0 }}>
+                    <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ color: "rgba(237,232,223,0.38)", flexShrink: 0 }}>
                       <path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </Link>
@@ -339,7 +661,7 @@ export default function Navigation() {
                 aria-label={s.label}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "50%", color: "rgba(255,255,255,0.4)", textDecoration: "none", transition: "border-color 0.2s, color 0.2s" }}
+                style={{ width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "50%", color: "rgba(237,232,223,0.65)", textDecoration: "none", transition: "border-color 0.2s, color 0.2s" }}
                 onMouseOver={(e) => { const el = e.currentTarget; el.style.borderColor = "var(--gold)"; el.style.color = "var(--gold)"; }}
                 onMouseOut={(e)  => { const el = e.currentTarget; el.style.borderColor = "rgba(255,255,255,0.1)"; el.style.color = "rgba(255,255,255,0.4)"; }}
               >
@@ -353,6 +675,10 @@ export default function Navigation() {
       <style>{`
         @media (max-width: 820px) {
           .pill-desktop-nav { display: none !important; }
+          .buy-nav-search-bar { display: none !important; }
+        }
+        @media (max-width: 960px) {
+          .buy-nav-search-bar select:nth-child(4) { display: none; }
         }
         .menu-link:hover .menu-item-label { color: var(--gold) !important; }
         .menu-link:hover svg { color: rgba(201,168,76,0.6) !important; }

@@ -176,7 +176,7 @@ function PropertyCard({ p, index, reducedMotion }: { p: Property; index: number;
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        background: "#141920",
+        background: "#131B27",
         border: `1px solid ${hovered ? "rgba(201,168,76,0.3)" : "rgba(255,255,255,0.06)"}`,
         display: "flex",
         flexDirection: "column",
@@ -265,7 +265,7 @@ function PropertyCard({ p, index, reducedMotion }: { p: Property; index: number;
         <h3 style={{ fontFamily: "var(--font-playfair)", fontSize: "0.95rem", fontWeight: 400, color: "#fff", letterSpacing: "0.02em", marginBottom: "0.35rem", lineHeight: 1.45 }}>
           {p.title}
         </h3>
-        <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.7rem", color: "rgba(255,255,255,0.42)", marginBottom: "1.1rem", lineHeight: 1.5 }}>
+        <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.7rem", color: "rgba(237,232,223,0.68)", marginBottom: "1.1rem", lineHeight: 1.5 }}>
           {p.address}, {p.suburb} VIC
         </p>
 
@@ -278,9 +278,9 @@ function PropertyCard({ p, index, reducedMotion }: { p: Property; index: number;
             { Icon: SqmIcon, value: p.sqm, label: "m²" },
           ].map(({ Icon, value, label }, si) => (
             <div key={label} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "0.2rem", borderRight: si < 3 ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
-              <div style={{ color: "rgba(255,255,255,0.35)" }}><Icon /></div>
+              <div style={{ color: "rgba(237,232,223,0.58)" }}><Icon /></div>
               <span style={{ fontFamily: "var(--font-playfair)", fontSize: "0.95rem", color: "#fff", fontWeight: 400 }}>{value}</span>
-              <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.5rem", color: "rgba(255,255,255,0.3)", letterSpacing: "0.1em", textTransform: "uppercase" }}>{label}</span>
+              <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.5rem", color: "rgba(237,232,223,0.52)", letterSpacing: "0.1em", textTransform: "uppercase" }}>{label}</span>
             </div>
           ))}
         </div>
@@ -332,7 +332,7 @@ function FilterSelect({ id, label, value, onChange, children }: {
       >
         {children}
       </select>
-      <div style={{ position: "absolute", right: "0.75rem", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", color: "rgba(255,255,255,0.35)" }}>
+      <div style={{ position: "absolute", right: "0.75rem", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", color: "rgba(237,232,223,0.58)" }}>
         <ChevronIcon />
       </div>
     </div>
@@ -388,9 +388,9 @@ function FeaturedCard({ p, height, signature = false }: { p: Property; height: n
       {/* Bottom info panel */}
       <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: signature ? "1.4rem 1.5rem" : "1rem 1.2rem", background: "rgba(10,14,20,0.72)", backdropFilter: "blur(14px)", borderTop: "1px solid rgba(255,255,255,0.07)", borderBottomLeftRadius: "16px", borderBottomRightRadius: "16px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.35rem" }}>
-          <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.48rem", color: "rgba(255,255,255,0.42)", letterSpacing: "0.2em", textTransform: "uppercase" }}>{p.type}</span>
-          <span aria-hidden="true" style={{ color: "rgba(255,255,255,0.2)", fontSize: "0.5rem" }}>·</span>
-          <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.48rem", color: "rgba(255,255,255,0.42)", letterSpacing: "0.12em", textTransform: "uppercase" }}>{p.sqm} m²</span>
+          <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.48rem", color: "rgba(237,232,223,0.68)", letterSpacing: "0.2em", textTransform: "uppercase" }}>{p.type}</span>
+          <span aria-hidden="true" style={{ color: "rgba(237,232,223,0.35)", fontSize: "0.5rem" }}>·</span>
+          <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.48rem", color: "rgba(237,232,223,0.68)", letterSpacing: "0.12em", textTransform: "uppercase" }}>{p.sqm} m²</span>
         </div>
         <p style={{ fontFamily: "var(--font-playfair)", fontSize: signature ? "1.35rem" : "1.05rem", fontWeight: 400, color: "var(--gold)", letterSpacing: "0.01em", marginBottom: "0.3rem", lineHeight: 1 }}>{p.price}</p>
         <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.65rem", color: "rgba(255,255,255,0.55)", lineHeight: 1.4 }}>{p.address}, {p.suburb}</p>
@@ -436,7 +436,7 @@ function FeaturedSection({ reducedMotion }: { reducedMotion: boolean }) {
             </h2>
           </div>
           <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "1rem", opacity: inView ? 1 : 0, transition: reducedMotion ? "none" : "opacity 0.8s ease 0.2s" }}>
-            <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.72rem", color: "rgba(255,255,255,0.38)", lineHeight: 1.75, maxWidth: "280px", textAlign: "right" }}>
+            <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.72rem", color: "rgba(237,232,223,0.62)", lineHeight: 1.75, maxWidth: "280px", textAlign: "right" }}>
               Handpicked prestige residences in Melbourne's most sought-after addresses.
             </p>
             <Link
@@ -468,14 +468,14 @@ function FeaturedSection({ reducedMotion }: { reducedMotion: boolean }) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "2rem", flexWrap: "wrap", gap: "1rem", opacity: inView ? 1 : 0, transition: reducedMotion ? "none" : "opacity 0.8s ease 0.35s" }}>
           <div style={{ display: "flex", gap: "0.6rem" }}>
             {[{ label: "Previous featured listing", d: "M8 4L4 8L8 12" }, { label: "Next featured listing", d: "M4 4L8 8L4 12" }].map(({ label, d }) => (
-              <button key={label} aria-label={label} style={{ width: "40px", height: "40px", borderRadius: "50%", background: "transparent", border: "1px solid rgba(255,255,255,0.14)", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.45)", cursor: "pointer", transition: "border-color 0.2s, color 0.2s" }}
+              <button key={label} aria-label={label} style={{ width: "40px", height: "40px", borderRadius: "50%", background: "transparent", border: "1px solid rgba(255,255,255,0.14)", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(237,232,223,0.68)", cursor: "pointer", transition: "border-color 0.2s, color 0.2s" }}
                 onMouseOver={(e) => { const el = e.currentTarget; el.style.borderColor = "var(--gold)"; el.style.color = "var(--gold)"; }}
-                onMouseOut={(e)  => { const el = e.currentTarget; el.style.borderColor = "rgba(255,255,255,0.14)"; el.style.color = "rgba(255,255,255,0.45)"; }}>
+                onMouseOut={(e)  => { const el = e.currentTarget; el.style.borderColor = "rgba(255,255,255,0.14)"; el.style.color = "rgba(237,232,223,0.68)"; }}>
                 <svg aria-hidden="true" width="12" height="16" viewBox="0 0 12 16" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><path d={d}/></svg>
               </button>
             ))}
           </div>
-          <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.55rem", color: "rgba(255,255,255,0.22)", letterSpacing: "0.15em" }}>3 of {PROPERTIES.length} Featured</p>
+          <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.55rem", color: "rgba(237,232,223,0.38)", letterSpacing: "0.15em" }}>3 of {PROPERTIES.length} Featured</p>
         </div>
       </div>
     </section>
@@ -541,7 +541,7 @@ function BuyEnquirySection({ reducedMotion }: { reducedMotion: boolean }) {
   const labelBase: React.CSSProperties = {
     display: "block", fontFamily: "var(--font-inter)", fontSize: "0.52rem",
     letterSpacing: "0.2em", textTransform: "uppercase",
-    color: "rgba(255,255,255,0.45)", marginBottom: "0.5rem",
+    color: "rgba(237,232,223,0.68)", marginBottom: "0.5rem",
   };
   const onFocusIn = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     { e.currentTarget.style.borderColor = "rgba(201,168,76,0.5)"; };
@@ -567,7 +567,7 @@ function BuyEnquirySection({ reducedMotion }: { reducedMotion: boolean }) {
             <h2 id="buy-enquiry-heading" style={{ fontFamily: "var(--font-playfair)", fontSize: "clamp(2rem, 3.5vw, 3rem)", fontWeight: 400, color: "#fff", lineHeight: 1.1, marginBottom: "1.25rem" }}>
               Enquire About<br /><em style={{ color: "var(--gold)", fontStyle: "italic" }}>a Property</em>
             </h2>
-            <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.78rem", color: "rgba(255,255,255,0.4)", lineHeight: 1.8, marginBottom: "2.5rem", maxWidth: "340px" }}>
+            <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.78rem", color: "rgba(237,232,223,0.65)", lineHeight: 1.8, marginBottom: "2.5rem", maxWidth: "340px" }}>
               Our experienced agents are ready to guide you through every step of your property journey. Reach out today.
             </p>
             {[
@@ -590,7 +590,7 @@ function BuyEnquirySection({ reducedMotion }: { reducedMotion: boolean }) {
                   <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 11l5 5 9-9"/></svg>
                 </div>
                 <h3 ref={successRef} tabIndex={-1} style={{ fontFamily: "var(--font-playfair)", fontSize: "1.7rem", color: "#fff", marginBottom: "0.75rem", outline: "none" }}>Thank You</h3>
-                <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.75rem", color: "rgba(255,255,255,0.45)", lineHeight: 1.75 }}>
+                <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.75rem", color: "rgba(237,232,223,0.68)", lineHeight: 1.75 }}>
                   Your enquiry has been received. One of our agents will be in touch within 24 hours.
                 </p>
               </div>
@@ -628,7 +628,7 @@ function BuyEnquirySection({ reducedMotion }: { reducedMotion: boolean }) {
                         <option>Townhouse</option>
                         <option>Land</option>
                       </select>
-                      <div style={{ position: "absolute", right: "0.9rem", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", color: "rgba(255,255,255,0.3)" }}><ChevronIcon /></div>
+                      <div style={{ position: "absolute", right: "0.9rem", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", color: "rgba(237,232,223,0.52)" }}><ChevronIcon /></div>
                     </div>
                   </div>
                 </div>
@@ -648,7 +648,7 @@ function BuyEnquirySection({ reducedMotion }: { reducedMotion: boolean }) {
                 >
                   Submit Enquiry
                 </button>
-                <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.52rem", color: "rgba(255,255,255,0.22)", textAlign: "center", marginTop: "1rem", lineHeight: 1.6 }}>
+                <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.52rem", color: "rgba(237,232,223,0.38)", textAlign: "center", marginTop: "1rem", lineHeight: 1.6 }}>
                   By submitting, you agree to our Privacy Policy.
                 </p>
               </form>
@@ -716,7 +716,7 @@ export default function BuyPageClient() {
   const clearFilters = () => { setQuery(""); setTypeFilter("All"); setMinBeds("0"); setPriceKey("Any"); };
 
   return (
-    <div style={{ background: "#0D1117", minHeight: "100vh", color: "#fff" }}>
+    <div style={{ background: "#08090E", minHeight: "100vh", color: "#fff" }}>
       <Navigation />
 
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
@@ -820,7 +820,7 @@ export default function BuyPageClient() {
             ].map(({ value, label }) => (
               <div key={label} style={{ display: "flex", flexDirection: "column", gap: "0.2rem" }}>
                 <span style={{ fontFamily: "var(--font-playfair)", fontSize: "clamp(1.4rem, 3vw, 2rem)", color: "#fff", fontWeight: 400, lineHeight: 1 }}>{value}</span>
-                <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.55rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.2em", textTransform: "uppercase" }}>{label}</span>
+                <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.55rem", color: "rgba(237,232,223,0.65)", letterSpacing: "0.2em", textTransform: "uppercase" }}>{label}</span>
               </div>
             ))}
           </div>
@@ -844,14 +844,14 @@ export default function BuyPageClient() {
       </section>
 
       {/* ── Search / Filter bar ───────────────────────────────────────────── */}
-      <section aria-label="Property search filters" style={{ background: "#0D1117", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "1.75rem clamp(1.5rem, 6vw, 5rem)", position: "sticky", top: "5rem", zIndex: 50 }}>
+      <section aria-label="Property search filters" style={{ background: "#08090E", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "1.75rem clamp(1.5rem, 6vw, 5rem)", position: "sticky", top: "5rem", zIndex: 50 }}>
         <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
           <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", alignItems: "center" }}>
 
             {/* Search input */}
             <div style={{ position: "relative", flex: "2 1 220px", minWidth: "180px" }}>
               <label htmlFor="buy-search" style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)", whiteSpace: "nowrap" }}>Search suburb or address</label>
-              <div style={{ position: "absolute", left: "0.9rem", top: "50%", transform: "translateY(-50%)", color: "rgba(255,255,255,0.3)", pointerEvents: "none" }}>
+              <div style={{ position: "absolute", left: "0.9rem", top: "50%", transform: "translateY(-50%)", color: "rgba(237,232,223,0.52)", pointerEvents: "none" }}>
                 <SearchIcon />
               </div>
               <input
@@ -906,7 +906,7 @@ export default function BuyPageClient() {
                   padding: "0.8rem 1.25rem", cursor: "pointer", whiteSpace: "nowrap",
                   transition: "border-color 0.2s, color 0.2s", flexShrink: 0,
                 }}
-                onMouseOver={(e) => { const el = e.currentTarget; el.style.borderColor = "rgba(255,255,255,0.3)"; el.style.color = "#fff"; }}
+                onMouseOver={(e) => { const el = e.currentTarget; el.style.borderColor = "rgba(237,232,223,0.52)"; el.style.color = "#fff"; }}
                 onMouseOut={(e)  => { const el = e.currentTarget; el.style.borderColor = "rgba(255,255,255,0.12)"; el.style.color = "rgba(255,255,255,0.5)"; }}
               >
                 Clear {activeFilters > 0 ? `(${activeFilters})` : ""}
@@ -916,7 +916,7 @@ export default function BuyPageClient() {
 
           {/* Results count — aria-live for screen readers */}
           <div aria-live="polite" aria-atomic="true" style={{ marginTop: "0.9rem", display: "flex", alignItems: "center", gap: "0.75rem" }}>
-            <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.62rem", color: "rgba(255,255,255,0.35)", letterSpacing: "0.1em" }}>
+            <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.62rem", color: "rgba(237,232,223,0.58)", letterSpacing: "0.1em" }}>
               Showing <strong style={{ color: "var(--gold)", fontWeight: 500 }}>{filtered.length}</strong> {filtered.length === 1 ? "property" : "properties"}
               {(query || activeFilters > 0) && " matching your criteria"}
             </span>
@@ -935,8 +935,8 @@ export default function BuyPageClient() {
       <section aria-label="Property listings" style={{ padding: "4rem clamp(1.5rem, 6vw, 5rem) 6rem", maxWidth: "1400px", margin: "0 auto" }}>
         {filtered.length === 0 ? (
           <div role="status" style={{ textAlign: "center", padding: "6rem 0" }}>
-            <p style={{ fontFamily: "var(--font-playfair)", fontSize: "1.6rem", color: "rgba(255,255,255,0.3)", marginBottom: "0.75rem" }}>No properties found</p>
-            <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.75rem", color: "rgba(255,255,255,0.2)", marginBottom: "2rem" }}>Try adjusting your search filters</p>
+            <p style={{ fontFamily: "var(--font-playfair)", fontSize: "1.6rem", color: "rgba(237,232,223,0.52)", marginBottom: "0.75rem" }}>No properties found</p>
+            <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.75rem", color: "rgba(237,232,223,0.35)", marginBottom: "2rem" }}>Try adjusting your search filters</p>
             <button onClick={clearFilters} style={{ ...goldBtnStyle }}>Clear Filters</button>
           </div>
         ) : (
@@ -950,7 +950,7 @@ export default function BuyPageClient() {
             {/* Load more */}
             {hasMore && (
               <div style={{ textAlign: "center", marginTop: "3.5rem" }}>
-                <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", color: "rgba(255,255,255,0.25)", letterSpacing: "0.15em", marginBottom: "1.25rem" }}>
+                <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", color: "rgba(237,232,223,0.42)", letterSpacing: "0.15em", marginBottom: "1.25rem" }}>
                   Showing {visible.length} of {filtered.length}
                 </p>
                 <button

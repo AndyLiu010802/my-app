@@ -540,7 +540,7 @@ export default function Enquiry() {
         }
         .eq-select {
           cursor: pointer;
-          color: rgba(255,255,255,0.25);
+          color: rgba(237,232,223,0.42);
         }
         .eq-select-filled { color: var(--gun-darkest); }
         .eq-select option {
@@ -552,7 +552,7 @@ export default function Enquiry() {
           right: 0;
           top: 50%;
           transform: translateY(-50%);
-          color: rgba(255,255,255,0.3);
+          color: rgba(237,232,223,0.52);
           pointer-events: none;
           transition: color 0.25s, transform 0.25s;
         }

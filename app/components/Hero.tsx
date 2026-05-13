@@ -221,7 +221,7 @@ export default function Hero({ videoUrl }: { videoUrl: string | null }) {
             fontSize: "0.6rem",
             letterSpacing: "0.25em",
             textTransform: "uppercase",
-            color: "rgba(255,255,255,0.35)",
+            color: "rgba(237,232,223,0.58)",
           }}
         >
           <a href="#vision" onClick={(e) => { e.preventDefault(); const t = document.querySelector("#vision") as HTMLElement; if (t) window.scrollTo({ top: t.offsetTop, behavior: "smooth" }); }}>Lorem </a>

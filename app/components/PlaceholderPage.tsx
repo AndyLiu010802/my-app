@@ -8,7 +8,7 @@ export default function PlaceholderPage({ title, subtitle }: { title: string; su
       <main
         style={{
           minHeight: "100vh",
-          background: "#0D1117",
+          background: "#08090E",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -55,7 +55,7 @@ export default function PlaceholderPage({ title, subtitle }: { title: string; su
             style={{
               fontFamily: "var(--font-inter)",
               fontSize: "0.9rem",
-              color: "rgba(255,255,255,0.4)",
+              color: "rgba(237,232,223,0.65)",
               textAlign: "center",
               maxWidth: "400px",
               lineHeight: 1.8,
@@ -71,7 +71,7 @@ export default function PlaceholderPage({ title, subtitle }: { title: string; su
             fontSize: "0.65rem",
             letterSpacing: "0.2em",
             textTransform: "uppercase",
-            color: "rgba(255,255,255,0.2)",
+            color: "rgba(237,232,223,0.38)",
           }}
         >
           Coming Soon

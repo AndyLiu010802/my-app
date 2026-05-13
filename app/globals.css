@@ -1,6 +1,31 @@
 @import "tailwindcss";
 
 :root {
+  /* Backgrounds — warm dark hierarchy */
+  --bg-base:    #08090E;   /* page background */
+  --bg-section: #0B0F18;   /* dark sections */
+  --bg-card:    #131B27;   /* card / panel */
+  --bg-raised:  #1C2639;   /* elevated surface */
+
+  /* Warm cream text — three legibility tiers */
+  --text-primary:   #EDE8DF;                /* headings / pure white moments */
+  --text-body:      rgba(237,232,223,0.72); /* body copy — clearly readable */
+  --text-secondary: rgba(237,232,223,0.52); /* secondary info */
+  --text-muted:     rgba(237,232,223,0.38); /* labels / decorative only */
+
+  /* Gold accent */
+  --gold:       #C9A84C;
+  --gold-light: #DFC07A;
+  --gold-dim:   rgba(201,168,76,0.22);   /* borders */
+  --gold-fill:  rgba(201,168,76,0.10);   /* tinted backgrounds */
+
+  /* Borders */
+  --border-gold:   rgba(201,168,76,0.25);
+  --border-strong: rgba(255,255,255,0.12);
+  --border-mid:    rgba(255,255,255,0.07);
+  --border-subtle: rgba(255,255,255,0.04);
+
+  /* Legacy — preserved for existing components */
   --gun-darkest: #1c2128;
   --gun-dark: #2d3440;
   --gun-mid: #4b5563;
@@ -8,8 +33,7 @@
   --gun-mist: #9ca3af;
   --cream: #f5f4f0;
   --white: #ffffff;
-  --gold: #c9a84c;
-  --gold-light: #e8d5a3;
+  --gold-light-old: #e8d5a3;
   --background: var(--cream);
   --foreground: var(--gun-darkest);
 }
