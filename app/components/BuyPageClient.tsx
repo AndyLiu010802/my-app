@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from "react";
+import Link from "next/link";
 import Navigation from "./Navigation";
 import Footer from "./Footer";
 
@@ -18,7 +19,7 @@ interface Property {
   baths: number;
   parking: number;
   sqm: number;
-  type: Exclude<PropType, "All">;
+  type: Exclude<PropType, "All">;         
   status: "For Sale" | "Under Offer";
   gradient: string;
   tag?: string;
@@ -123,6 +124,32 @@ const ChevronIcon = () => (
   </svg>
 );
 
+// ─── Hover Logo Overlay ────────────────────────────────────────────────────────
+function LogoOverlay({ visible }: { visible: boolean }) {
+  return (
+    <div
+      aria-hidden="true"
+      style={{
+        position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none",
+        background: "rgba(255,255,255,0.1)",
+        backdropFilter: "blur(1.5px)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        opacity: visible ? 1 : 0,
+        transition: "opacity 0.38s ease",
+      }}
+    >
+      <div style={{
+        display: "flex", flexDirection: "column", alignItems: "center", gap: "4px",
+        transform: visible ? "scale(1)" : "scale(0.85)",
+        transition: "transform 0.42s cubic-bezier(0.22,1,0.36,1)",
+      }}>
+        <span style={{ fontFamily: "var(--font-playfair)", fontSize: "1.5rem", fontWeight: 600, color: "#fff", letterSpacing: "0.12em", lineHeight: 1 }}>LOREM</span>
+        <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.52rem", fontWeight: 400, color: "var(--gold)", letterSpacing: "0.42em", textTransform: "uppercase", lineHeight: 1 }}>IPSUM</span>
+      </div>
+    </div>
+  );
+}
+
 // ─── Property Card ─────────────────────────────────────────────────────────────
 function PropertyCard({ p, index, reducedMotion }: { p: Property; index: number; reducedMotion: boolean }) {
   const ref = useRef<HTMLElement>(null);
@@ -181,6 +208,7 @@ function PropertyCard({ p, index, reducedMotion }: { p: Property; index: number;
           mixBlendMode: "multiply",
           opacity: 0.5,
         }} />
+        <LogoOverlay visible={hovered} />
 
         {/* Status badge */}
         <div style={{ position: "absolute", top: "1rem", left: "1rem" }}>
@@ -308,6 +336,327 @@ function FilterSelect({ id, label, value, onChange, children }: {
         <ChevronIcon />
       </div>
     </div>
+  );
+}
+
+// ─── Featured Image Card ───────────────────────────────────────────────────────
+function FeaturedCard({ p, height, signature = false }: { p: Property; height: number; signature?: boolean }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        position: "relative", height, borderRadius: "16px",
+        overflow: "hidden", background: p.gradient, cursor: "pointer",
+        border: `1px solid ${hovered ? "rgba(201,168,76,0.35)" : "rgba(255,255,255,0.07)"}`,
+        transition: "border-color 0.25s, transform 0.45s cubic-bezier(0.22,1,0.36,1), box-shadow 0.45s",
+        transform: hovered ? "translateY(-5px)" : "translateY(0)",
+        boxShadow: hovered ? "0 24px 60px rgba(0,0,0,0.6)" : "0 6px 24px rgba(0,0,0,0.35)",
+      }}
+    >
+      {/* Architectural grid */}
+      <div aria-hidden="true" style={{ position: "absolute", inset: 0, backgroundImage: "repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(255,255,255,0.022) 79px,rgba(255,255,255,0.022) 80px),repeating-linear-gradient(0deg,transparent,transparent 59px,rgba(255,255,255,0.022) 59px,rgba(255,255,255,0.022) 60px)" }} />
+      {/* Subtle light source */}
+      <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 70% 20%, rgba(255,255,255,0.04) 0%, transparent 60%)" }} />
+      {/* Zoom layer */}
+      <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: p.gradient, opacity: 0.5, mixBlendMode: "multiply", transform: hovered ? "scale(1.07)" : "scale(1)", transition: "transform 0.65s cubic-bezier(0.22,1,0.36,1)" }} />
+      {/* Text legibility overlay */}
+      <div aria-hidden="true" style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.04) 40%, rgba(0,0,0,0.8) 100%)" }} />
+      <LogoOverlay visible={hovered} />
+
+      {/* Top-left brand badge */}
+      <div style={{ position: "absolute", top: "1rem", left: "1rem" }}>
+        <div style={{ background: "rgba(13,17,23,0.72)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "4px", padding: "0.28rem 0.65rem", display: "flex", alignItems: "center", gap: "0.4rem" }}>
+          <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.48rem", color: "rgba(255,255,255,0.65)", letterSpacing: "0.15em", textTransform: "uppercase" }}>South Property</span>
+          {signature && (
+            <>
+              <span aria-hidden="true" style={{ width: "2px", height: "2px", borderRadius: "50%", background: "var(--gold)", flexShrink: 0 }} />
+              <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.48rem", color: "var(--gold)", letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 600 }}>Signature</span>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Top-right status */}
+      <div style={{ position: "absolute", top: "1rem", right: "1rem" }}>
+        <span style={{ display: "inline-block", background: p.status === "For Sale" ? "var(--gold)" : "rgba(255,255,255,0.18)", backdropFilter: "blur(6px)", borderRadius: "2px", color: "#fff", fontSize: "0.48rem", fontFamily: "var(--font-inter)", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", padding: "0.26rem 0.6rem" }}>
+          {p.status}
+        </span>
+      </div>
+
+      {/* Bottom info panel */}
+      <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: signature ? "1.4rem 1.5rem" : "1rem 1.2rem", background: "rgba(10,14,20,0.72)", backdropFilter: "blur(14px)", borderTop: "1px solid rgba(255,255,255,0.07)", borderBottomLeftRadius: "16px", borderBottomRightRadius: "16px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.35rem" }}>
+          <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.48rem", color: "rgba(255,255,255,0.42)", letterSpacing: "0.2em", textTransform: "uppercase" }}>{p.type}</span>
+          <span aria-hidden="true" style={{ color: "rgba(255,255,255,0.2)", fontSize: "0.5rem" }}>·</span>
+          <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.48rem", color: "rgba(255,255,255,0.42)", letterSpacing: "0.12em", textTransform: "uppercase" }}>{p.sqm} m²</span>
+        </div>
+        <p style={{ fontFamily: "var(--font-playfair)", fontSize: signature ? "1.35rem" : "1.05rem", fontWeight: 400, color: "var(--gold)", letterSpacing: "0.01em", marginBottom: "0.3rem", lineHeight: 1 }}>{p.price}</p>
+        <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.65rem", color: "rgba(255,255,255,0.55)", lineHeight: 1.4 }}>{p.address}, {p.suburb}</p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Featured Listings Section ─────────────────────────────────────────────────
+function FeaturedSection({ reducedMotion }: { reducedMotion: boolean }) {
+  const ref = useRef<HTMLElement>(null);
+  const [inView, setInView] = useState(reducedMotion);
+
+  useEffect(() => {
+    if (reducedMotion) return;
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setInView(true); obs.disconnect(); } },
+      { threshold: 0.04 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [reducedMotion]);
+
+  return (
+    <section ref={ref} aria-labelledby="featured-heading" style={{ padding: "0 clamp(1.5rem, 6vw, 5rem) 7rem", position: "relative", overflow: "hidden" }}>
+      {/* Decorative rings */}
+      <div aria-hidden="true" style={{ position: "absolute", top: "-100px", left: "10%", width: "540px", height: "540px", borderRadius: "50%", border: "1px solid rgba(255,255,255,0.035)", pointerEvents: "none" }} />
+      <div aria-hidden="true" style={{ position: "absolute", top: "80px", right: "6%", width: "360px", height: "360px", borderRadius: "50%", border: "1px solid rgba(255,255,255,0.025)", pointerEvents: "none" }} />
+
+      <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
+        {/* Divider */}
+        <div aria-hidden="true" style={{ height: "1px", background: "linear-gradient(to right, transparent, rgba(201,168,76,0.2), transparent)", marginBottom: "5rem" }} />
+
+        {/* Header row */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "2.5rem", flexWrap: "wrap", gap: "1.5rem" }}>
+          <div style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(20px)", transition: reducedMotion ? "none" : "opacity 0.8s ease, transform 0.8s ease" }}>
+            <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.55rem", letterSpacing: "0.3em", textTransform: "uppercase", color: "var(--gold)", marginBottom: "0.75rem" }}>South Property</p>
+            <div aria-hidden="true" style={{ width: "2rem", height: "1px", background: "var(--gold)", opacity: 0.5, marginBottom: "1.25rem" }} />
+            <h2 id="featured-heading" style={{ fontFamily: "var(--font-playfair)", fontSize: "clamp(1.8rem, 4vw, 3rem)", fontWeight: 400, color: "#fff", lineHeight: 1.1 }}>
+              Signature<br /><em style={{ color: "var(--gold)", fontStyle: "italic" }}>Listings</em>
+            </h2>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "1rem", opacity: inView ? 1 : 0, transition: reducedMotion ? "none" : "opacity 0.8s ease 0.2s" }}>
+            <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.72rem", color: "rgba(255,255,255,0.38)", lineHeight: 1.75, maxWidth: "280px", textAlign: "right" }}>
+              Handpicked prestige residences in Melbourne's most sought-after addresses.
+            </p>
+            <Link
+              href="/signature"
+              style={{ display: "flex", alignItems: "center", gap: "0.6rem", background: "rgba(201,168,76,0.08)", border: "1px solid rgba(201,168,76,0.3)", borderRadius: "100px", padding: "0.65rem 1.5rem", color: "var(--gold)", fontFamily: "var(--font-inter)", fontSize: "0.58rem", fontWeight: 500, letterSpacing: "0.2em", textTransform: "uppercase", textDecoration: "none", transition: "background 0.25s, border-color 0.25s" }}
+              onMouseOver={(e) => { const el = e.currentTarget; el.style.background = "rgba(201,168,76,0.16)"; el.style.borderColor = "var(--gold)"; }}
+              onMouseOut={(e)  => { const el = e.currentTarget; el.style.background = "rgba(201,168,76,0.08)"; el.style.borderColor = "rgba(201,168,76,0.3)"; }}
+            >
+              View All Listings
+              <svg aria-hidden="true" width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><path d="M2 7H12M8 3L12 7L8 11"/></svg>
+            </Link>
+          </div>
+        </div>
+
+        {/* Asymmetric cards grid */}
+        <div className="featured-grid">
+          <div className="featured-left" style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(32px)", transition: reducedMotion ? "none" : "opacity 0.75s ease 0.12s, transform 0.75s ease 0.12s" }}>
+            <FeaturedCard p={PROPERTIES[0]} height={300} />
+          </div>
+          <div className="featured-center" style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(32px)", transition: reducedMotion ? "none" : "opacity 0.75s ease 0.04s, transform 0.75s ease 0.04s" }}>
+            <FeaturedCard p={PROPERTIES[4]} height={500} signature />
+          </div>
+          <div className="featured-right" style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(32px)", transition: reducedMotion ? "none" : "opacity 0.75s ease 0.2s, transform 0.75s ease 0.2s" }}>
+            <FeaturedCard p={PROPERTIES[6]} height={300} />
+          </div>
+        </div>
+
+        {/* Bottom nav row */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "2rem", flexWrap: "wrap", gap: "1rem", opacity: inView ? 1 : 0, transition: reducedMotion ? "none" : "opacity 0.8s ease 0.35s" }}>
+          <div style={{ display: "flex", gap: "0.6rem" }}>
+            {[{ label: "Previous featured listing", d: "M8 4L4 8L8 12" }, { label: "Next featured listing", d: "M4 4L8 8L4 12" }].map(({ label, d }) => (
+              <button key={label} aria-label={label} style={{ width: "40px", height: "40px", borderRadius: "50%", background: "transparent", border: "1px solid rgba(255,255,255,0.14)", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.45)", cursor: "pointer", transition: "border-color 0.2s, color 0.2s" }}
+                onMouseOver={(e) => { const el = e.currentTarget; el.style.borderColor = "var(--gold)"; el.style.color = "var(--gold)"; }}
+                onMouseOut={(e)  => { const el = e.currentTarget; el.style.borderColor = "rgba(255,255,255,0.14)"; el.style.color = "rgba(255,255,255,0.45)"; }}>
+                <svg aria-hidden="true" width="12" height="16" viewBox="0 0 12 16" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><path d={d}/></svg>
+              </button>
+            ))}
+          </div>
+          <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.55rem", color: "rgba(255,255,255,0.22)", letterSpacing: "0.15em" }}>3 of {PROPERTIES.length} Featured</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Buy Enquiry Section ───────────────────────────────────────────────────────
+type BuyFormData = { name: string; email: string; phone: string; interest: string; message: string };
+
+function BuyEnquirySection({ reducedMotion }: { reducedMotion: boolean }) {
+  const [form, setForm] = useState<BuyFormData>({ name: "", email: "", phone: "", interest: "", message: "" });
+  const [errors, setErrors] = useState<Partial<BuyFormData>>({});
+  const [submitted, setSubmitted] = useState(false);
+  const ref = useRef<HTMLElement>(null);
+  const [inView, setInView] = useState(reducedMotion);
+  const successRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    if (reducedMotion) return;
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setInView(true); obs.disconnect(); } },
+      { threshold: 0.04 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [reducedMotion]);
+
+  useEffect(() => {
+    if (submitted && successRef.current) successRef.current.focus();
+  }, [submitted]);
+
+  const update = (field: keyof BuyFormData) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+      setForm((f) => ({ ...f, [field]: e.target.value }));
+      if (errors[field]) setErrors((err) => { const c = { ...err }; delete c[field]; return c; });
+    };
+
+  const validate = (): Partial<BuyFormData> => {
+    const errs: Partial<BuyFormData> = {};
+    if (!form.name.trim()) errs.name = "Name is required";
+    if (!form.email.trim()) errs.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = "Enter a valid email address";
+    if (!form.message.trim()) errs.message = "Message is required";
+    return errs;
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const errs = validate();
+    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+    setSubmitted(true);
+  };
+
+  const inputBase: React.CSSProperties = {
+    width: "100%", background: "rgba(255,255,255,0.04)",
+    border: "1px solid rgba(255,255,255,0.1)", color: "#fff",
+    fontFamily: "var(--font-inter)", fontSize: "0.75rem",
+    padding: "0.85rem 1rem", outline: "none",
+    transition: "border-color 0.2s", borderRadius: 0,
+  };
+  const labelBase: React.CSSProperties = {
+    display: "block", fontFamily: "var(--font-inter)", fontSize: "0.52rem",
+    letterSpacing: "0.2em", textTransform: "uppercase",
+    color: "rgba(255,255,255,0.45)", marginBottom: "0.5rem",
+  };
+  const onFocusIn = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+    { e.currentTarget.style.borderColor = "rgba(201,168,76,0.5)"; };
+  const onFocusOut = (hasErr: boolean) =>
+    (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+    { e.currentTarget.style.borderColor = hasErr ? "rgba(220,80,80,0.5)" : "rgba(255,255,255,0.1)"; };
+
+  return (
+    <section ref={ref} aria-labelledby="buy-enquiry-heading" style={{ padding: "0 clamp(1.5rem, 6vw, 5rem) 7rem", position: "relative", overflow: "hidden" }}>
+      {/* Decorative rings */}
+      <div aria-hidden="true" style={{ position: "absolute", bottom: "-40px", right: "4%", width: "420px", height: "420px", borderRadius: "50%", border: "1px solid rgba(255,255,255,0.035)", pointerEvents: "none" }} />
+      <div aria-hidden="true" style={{ position: "absolute", top: "5%", left: "-4%", width: "300px", height: "300px", borderRadius: "50%", border: "1px solid rgba(255,255,255,0.025)", pointerEvents: "none" }} />
+
+      <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
+        {/* Divider */}
+        <div aria-hidden="true" style={{ height: "1px", background: "linear-gradient(to right, transparent, rgba(201,168,76,0.2), transparent)", marginBottom: "5rem" }} />
+
+        <div className="buy-enquiry-grid">
+          {/* Left: info panel */}
+          <div style={{ opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(24px)", transition: reducedMotion ? "none" : "opacity 0.8s ease, transform 0.8s ease" }}>
+            <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.55rem", letterSpacing: "0.3em", textTransform: "uppercase", color: "var(--gold)", marginBottom: "0.75rem" }}>Get in Touch</p>
+            <div aria-hidden="true" style={{ width: "2rem", height: "1px", background: "var(--gold)", opacity: 0.5, marginBottom: "1.5rem" }} />
+            <h2 id="buy-enquiry-heading" style={{ fontFamily: "var(--font-playfair)", fontSize: "clamp(2rem, 3.5vw, 3rem)", fontWeight: 400, color: "#fff", lineHeight: 1.1, marginBottom: "1.25rem" }}>
+              Enquire About<br /><em style={{ color: "var(--gold)", fontStyle: "italic" }}>a Property</em>
+            </h2>
+            <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.78rem", color: "rgba(255,255,255,0.4)", lineHeight: 1.8, marginBottom: "2.5rem", maxWidth: "340px" }}>
+              Our experienced agents are ready to guide you through every step of your property journey. Reach out today.
+            </p>
+            {[
+              { label: "Phone", value: "+61 3 9000 0000" },
+              { label: "Email", value: "enquiries@southproperty.com.au" },
+              { label: "Office", value: "Level 12, 200 Collins Street, Melbourne VIC 3000" },
+            ].map(({ label, value }) => (
+              <div key={label} style={{ marginBottom: "1.25rem", paddingBottom: "1.25rem", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                <span style={{ ...labelBase, marginBottom: "0.35rem" }}>{label}</span>
+                <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.78rem", color: "rgba(255,255,255,0.58)", lineHeight: 1.5 }}>{value}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Right: form card */}
+          <div style={{ background: "rgba(20,25,32,0.9)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "16px", padding: "clamp(1.75rem, 4vw, 2.75rem)", opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(24px)", transition: reducedMotion ? "none" : "opacity 0.8s ease 0.15s, transform 0.8s ease 0.15s" }}>
+            {submitted ? (
+              <div style={{ textAlign: "center", padding: "2.5rem 1rem" }}>
+                <div aria-hidden="true" style={{ width: "56px", height: "56px", borderRadius: "50%", border: "1px solid var(--gold)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1.5rem", color: "var(--gold)" }}>
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 11l5 5 9-9"/></svg>
+                </div>
+                <h3 ref={successRef} tabIndex={-1} style={{ fontFamily: "var(--font-playfair)", fontSize: "1.7rem", color: "#fff", marginBottom: "0.75rem", outline: "none" }}>Thank You</h3>
+                <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.75rem", color: "rgba(255,255,255,0.45)", lineHeight: 1.75 }}>
+                  Your enquiry has been received. One of our agents will be in touch within 24 hours.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} noValidate aria-labelledby="buy-enquiry-heading">
+                <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.52rem", letterSpacing: "0.25em", textTransform: "uppercase", color: "var(--gold)", marginBottom: "1.75rem" }}>Property Enquiry</p>
+
+                {/* Name + Email */}
+                <div className="form-row" style={{ marginBottom: "1rem" }}>
+                  <div>
+                    <label htmlFor="enq-name" style={labelBase}>Full Name <span aria-hidden="true" style={{ color: "var(--gold)" }}>*</span></label>
+                    <input id="enq-name" type="text" value={form.name} onChange={update("name")} aria-required="true" aria-invalid={!!errors.name} aria-describedby={errors.name ? "enq-name-err" : undefined} style={{ ...inputBase, borderColor: errors.name ? "rgba(220,80,80,0.5)" : undefined }} onFocus={onFocusIn} onBlur={onFocusOut(!!errors.name)} />
+                    {errors.name && <span id="enq-name-err" role="alert" style={{ display: "block", fontFamily: "var(--font-inter)", fontSize: "0.58rem", color: "rgba(220,80,80,0.9)", marginTop: "0.35rem" }}>{errors.name}</span>}
+                  </div>
+                  <div>
+                    <label htmlFor="enq-email" style={labelBase}>Email <span aria-hidden="true" style={{ color: "var(--gold)" }}>*</span></label>
+                    <input id="enq-email" type="email" value={form.email} onChange={update("email")} aria-required="true" aria-invalid={!!errors.email} aria-describedby={errors.email ? "enq-email-err" : undefined} style={{ ...inputBase, borderColor: errors.email ? "rgba(220,80,80,0.5)" : undefined }} onFocus={onFocusIn} onBlur={onFocusOut(!!errors.email)} />
+                    {errors.email && <span id="enq-email-err" role="alert" style={{ display: "block", fontFamily: "var(--font-inter)", fontSize: "0.58rem", color: "rgba(220,80,80,0.9)", marginTop: "0.35rem" }}>{errors.email}</span>}
+                  </div>
+                </div>
+
+                {/* Phone + Interest */}
+                <div className="form-row" style={{ marginBottom: "1rem" }}>
+                  <div>
+                    <label htmlFor="enq-phone" style={labelBase}>Phone</label>
+                    <input id="enq-phone" type="tel" value={form.phone} onChange={update("phone")} style={inputBase} onFocus={onFocusIn} onBlur={onFocusOut(false)} />
+                  </div>
+                  <div>
+                    <label htmlFor="enq-interest" style={labelBase}>Property Type</label>
+                    <div style={{ position: "relative" }}>
+                      <select id="enq-interest" value={form.interest} onChange={update("interest")} style={{ ...inputBase, appearance: "none", WebkitAppearance: "none", cursor: "pointer", paddingRight: "2.5rem" }} onFocus={onFocusIn} onBlur={onFocusOut(false)}>
+                        <option value="">Any type…</option>
+                        <option>House</option>
+                        <option>Apartment</option>
+                        <option>Townhouse</option>
+                        <option>Land</option>
+                      </select>
+                      <div style={{ position: "absolute", right: "0.9rem", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", color: "rgba(255,255,255,0.3)" }}><ChevronIcon /></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Message */}
+                <div style={{ marginBottom: "1.5rem" }}>
+                  <label htmlFor="enq-message" style={labelBase}>Message <span aria-hidden="true" style={{ color: "var(--gold)" }}>*</span></label>
+                  <textarea id="enq-message" value={form.message} onChange={update("message")} rows={4} aria-required="true" aria-invalid={!!errors.message} aria-describedby={errors.message ? "enq-message-err" : undefined} style={{ ...inputBase, resize: "vertical", minHeight: "100px", borderColor: errors.message ? "rgba(220,80,80,0.5)" : undefined }} onFocus={onFocusIn} onBlur={onFocusOut(!!errors.message)} />
+                  {errors.message && <span id="enq-message-err" role="alert" style={{ display: "block", fontFamily: "var(--font-inter)", fontSize: "0.58rem", color: "rgba(220,80,80,0.9)", marginTop: "0.35rem" }}>{errors.message}</span>}
+                </div>
+
+                <button
+                  type="submit"
+                  style={{ width: "100%", padding: "1rem", background: "var(--gold)", border: "1px solid var(--gold)", color: "#fff", fontFamily: "var(--font-inter)", fontSize: "0.62rem", fontWeight: 500, letterSpacing: "0.22em", textTransform: "uppercase", cursor: "pointer", transition: "background 0.25s" }}
+                  onMouseOver={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "#B8962A"; }}
+                  onMouseOut={(e)  => { (e.currentTarget as HTMLButtonElement).style.background = "var(--gold)"; }}
+                >
+                  Submit Enquiry
+                </button>
+                <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.52rem", color: "rgba(255,255,255,0.22)", textAlign: "center", marginTop: "1rem", lineHeight: 1.6 }}>
+                  By submitting, you agree to our Privacy Policy.
+                </p>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -616,6 +965,9 @@ export default function BuyPageClient() {
         )}
       </section>
 
+      <FeaturedSection reducedMotion={rm} />
+      <BuyEnquirySection reducedMotion={rm} />
+
       <Footer />
 
       <style>{`
@@ -640,6 +992,44 @@ export default function BuyPageClient() {
           outline-offset: 2px;
         }
         input[type="search"]::-webkit-search-cancel-button { cursor: pointer; }
+        /* Featured section grid */
+        .featured-grid {
+          display: grid;
+          grid-template-columns: 1fr 1.65fr 1fr;
+          gap: 1rem;
+          align-items: start;
+        }
+        .featured-left  { margin-top: 2.5rem; }
+        .featured-right { margin-top: 5rem; }
+        @media (max-width: 900px) {
+          .featured-grid { grid-template-columns: 1fr 1fr; }
+          .featured-right { display: none; }
+          .featured-left { margin-top: 0; }
+        }
+        @media (max-width: 580px) {
+          .featured-grid { grid-template-columns: 1fr; }
+          .featured-center div[style*="height: 500"] { height: 360px !important; }
+        }
+        /* Enquiry section grid */
+        .buy-enquiry-grid {
+          display: grid;
+          grid-template-columns: 1fr 1.4fr;
+          gap: clamp(3rem, 6vw, 6rem);
+          align-items: start;
+        }
+        @media (max-width: 860px) {
+          .buy-enquiry-grid { grid-template-columns: 1fr; }
+        }
+        /* Form two-column row */
+        .form-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1rem;
+          margin-bottom: 1rem;
+        }
+        @media (max-width: 560px) {
+          .form-row { grid-template-columns: 1fr; }
+        }
         @keyframes scrollPulse {
           0%, 100% { opacity: 0.6; transform: scaleY(1); }
           50% { opacity: 1; transform: scaleY(0.85); }

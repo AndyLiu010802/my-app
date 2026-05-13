@@ -29,14 +29,14 @@ const menuItems = [
 ];
 
 export default function Navigation() {
-  const pathname               = usePathname();
-  const isHome                 = pathname === "/";
+  const pathname                           = usePathname();
+  const isHome                             = pathname === "/";
   const [scrolled, setScrolled]           = useState(false);
   const [menuOpen, setMenuOpen]           = useState(false);
   const [aboutExpanded, setAboutExpanded] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
+    const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -52,7 +52,6 @@ export default function Navigation() {
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
-  // Close slide panel when route changes
   useEffect(() => { setMenuOpen(false); }, [pathname]);
 
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -69,43 +68,52 @@ export default function Navigation() {
 
   const logoEl = (
     <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-      <span style={{ fontFamily: "var(--font-playfair)", fontSize: "1.35rem", fontWeight: 600, color: "#fff", letterSpacing: "0.12em", lineHeight: 1 }}>LOREM</span>
-      <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", fontWeight: 400, color: "var(--gold)", letterSpacing: "0.35em", textTransform: "uppercase", lineHeight: 1 }}>IPSUM</span>
+      <span style={{ fontFamily: "var(--font-playfair)", fontSize: "1.3rem", fontWeight: 600, color: "#fff", letterSpacing: "0.12em", lineHeight: 1 }}>LOREM</span>
+      <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.55rem", fontWeight: 400, color: "var(--gold)", letterSpacing: "0.38em", textTransform: "uppercase", lineHeight: 1 }}>IPSUM</span>
     </div>
   );
 
   return (
     <>
+      {/* ── Floating pill navbar ─────────────────────────────────────────── */}
       <header
         style={{
-          position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-          transition: "background 0.4s ease, box-shadow 0.4s ease",
-          background: scrolled || !isHome ? "rgba(28, 33, 40, 0.97)" : "transparent",
-          boxShadow: scrolled || !isHome ? "0 1px 24px rgba(0,0,0,0.18)" : "none",
-          backdropFilter: scrolled || !isHome ? "blur(8px)" : "none",
+          position: "fixed",
+          top: "1.1rem",
+          left: "clamp(0.75rem, 3vw, 2.25rem)",
+          right: "clamp(0.75rem, 3vw, 2.25rem)",
+          zIndex: 100,
+          borderRadius: "100px",
+          background: scrolled
+            ? "rgba(12, 16, 23, 0.97)"
+            : "rgba(12, 16, 23, 0.82)",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
+          border: scrolled
+            ? "1px solid rgba(255,255,255,0.13)"
+            : "1px solid rgba(255,255,255,0.08)",
+          boxShadow: scrolled
+            ? "0 12px 56px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.07) inset"
+            : "0 6px 32px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.04) inset",
+          transition: "background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease",
         }}
       >
-        <div
-          className="nav-inner"
-          style={{
-            maxWidth: "1400px", margin: "0 auto", padding: "0 2.5rem",
-            height: "5rem", display: "flex", alignItems: "center", justifyContent: "space-between",
-          }}
-        >
-          {/* Logo — scrolls to top on home, links to / on sub-pages */}
+        <div style={{ padding: "0 1.4rem", height: "3.75rem", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem" }}>
+
+          {/* Logo */}
           {isHome ? (
-            <a href="#" onClick={(e) => scrollToSection(e, "#")} style={{ textDecoration: "none" }}>
+            <a href="#" onClick={(e) => scrollToSection(e, "#")} style={{ textDecoration: "none", flexShrink: 0 }}>
               {logoEl}
             </a>
           ) : (
-            <Link href="/" style={{ textDecoration: "none" }}>
+            <Link href="/" style={{ textDecoration: "none", flexShrink: 0 }}>
               {logoEl}
             </Link>
           )}
 
           {/* Desktop anchor nav — homepage only */}
           {isHome && (
-            <nav className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: "2.5rem" }}>
+            <nav className="pill-desktop-nav" aria-label="Main navigation" style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
               {navLinks.map((link) => (
                 <a key={link.href} href={link.href} className="nav-link" onClick={(e) => scrollToSection(e, link.href)}>
                   {link.label}
@@ -114,11 +122,20 @@ export default function Navigation() {
               <a
                 href="#contact"
                 onClick={(e) => scrollToSection(e, "#contact")}
-                className="nav-cta"
+                className="pill-cta"
                 style={{
-                  padding: "0.6rem 1.6rem", background: "var(--gold)", color: "#fff",
-                  fontSize: "0.65rem", fontWeight: 500, letterSpacing: "0.2em", textTransform: "uppercase",
-                  textDecoration: "none", transition: "background 0.3s", border: "1px solid var(--gold)", whiteSpace: "nowrap",
+                  padding: "0.48rem 1.35rem",
+                  background: "var(--gold)",
+                  color: "#fff",
+                  fontSize: "0.6rem",
+                  fontWeight: 500,
+                  letterSpacing: "0.2em",
+                  textTransform: "uppercase",
+                  textDecoration: "none",
+                  borderRadius: "100px",
+                  border: "1px solid var(--gold)",
+                  whiteSpace: "nowrap",
+                  transition: "background 0.25s",
                 }}
                 onMouseOver={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#B8962A"; }}
                 onMouseOut={(e)  => { (e.currentTarget as HTMLAnchorElement).style.background = "var(--gold)"; }}
@@ -128,35 +145,46 @@ export default function Navigation() {
             </nav>
           )}
 
-          {/* Hamburger — always visible, right-aligned */}
+          {/* Hamburger pill button */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
             style={{
-              background: "none", border: "none", cursor: "pointer",
-              display: "flex", flexDirection: "column", alignItems: "center",
-              gap: "4px", padding: "0.5rem",
-              marginLeft: isHome ? "1.5rem" : "auto",
+              background: menuOpen ? "rgba(255,255,255,0.06)" : "transparent",
+              border: "1px solid rgba(255,255,255,0.15)",
+              borderRadius: "100px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.55rem",
+              padding: "0.5rem 0.9rem",
+              flexShrink: 0,
+              transition: "background 0.2s, border-color 0.2s",
             }}
+            onMouseOver={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.32)"; }}
+            onMouseOut={(e)  => { if (!menuOpen) (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.15)"; }}
           >
             {menuOpen ? (
-              <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <line x1="3" y1="3" x2="17" y2="17" stroke="#fff" strokeWidth="1.4" strokeLinecap="round"/>
-                <line x1="17" y1="3" x2="3"  y2="17" stroke="#fff" strokeWidth="1.4" strokeLinecap="round"/>
+              <svg aria-hidden="true" width="16" height="16" viewBox="0 0 20 20" fill="none">
+                <line x1="3" y1="3" x2="17" y2="17" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
+                <line x1="17" y1="3" x2="3"  y2="17" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/>
               </svg>
             ) : (
-              <>
-                <span aria-hidden="true" style={{ display: "block", width: "22px", height: "1px", background: "#fff" }} />
-                <span aria-hidden="true" style={{ display: "block", width: "14px", height: "1px", background: "var(--gold)", alignSelf: "flex-end" }} />
-                <span aria-hidden="true" style={{ display: "block", width: "22px", height: "1px", background: "#fff" }} />
-              </>
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px", alignItems: "flex-end" }}>
+                <span aria-hidden="true" style={{ display: "block", width: "18px", height: "1px", background: "#fff" }} />
+                <span aria-hidden="true" style={{ display: "block", width: "12px", height: "1px", background: "var(--gold)" }} />
+                <span aria-hidden="true" style={{ display: "block", width: "18px", height: "1px", background: "#fff" }} />
+              </div>
             )}
+            <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.58rem", fontWeight: 500, color: "rgba(255,255,255,0.75)", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+              Menu
+            </span>
           </button>
         </div>
       </header>
 
-      {/* Backdrop */}
+      {/* ── Backdrop ─────────────────────────────────────────────────────── */}
       <div
         onClick={() => setMenuOpen(false)}
         aria-hidden="true"
@@ -170,7 +198,7 @@ export default function Navigation() {
         }}
       />
 
-      {/* Slide-out panel */}
+      {/* ── Slide-out panel ───────────────────────────────────────────────── */}
       <div
         role="dialog"
         aria-modal="true"
@@ -197,7 +225,7 @@ export default function Navigation() {
           <button
             onClick={() => setMenuOpen(false)}
             aria-label="Close menu"
-            style={{ background: "none", border: "1px solid rgba(255,255,255,0.12)", cursor: "pointer", width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.6)", transition: "border-color 0.2s, color 0.2s", flexShrink: 0 }}
+            style={{ background: "none", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "50%", cursor: "pointer", width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.6)", transition: "border-color 0.2s, color 0.2s", flexShrink: 0 }}
             onMouseOver={(e) => { const el = e.currentTarget; el.style.borderColor = "var(--gold)"; el.style.color = "var(--gold)"; }}
             onMouseOut={(e)  => { const el = e.currentTarget; el.style.borderColor = "rgba(255,255,255,0.12)"; el.style.color = "rgba(255,255,255,0.6)"; }}
           >
@@ -223,16 +251,14 @@ export default function Navigation() {
                   <>
                     <button
                       onClick={() => setAboutExpanded(!aboutExpanded)}
+                      aria-expanded={aboutExpanded}
                       style={{ width: "100%", background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "1.1rem 0", gap: "1rem" }}
                     >
                       <div style={{ display: "flex", alignItems: "center", gap: "1.25rem" }}>
                         <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.58rem", color: "var(--gold)", letterSpacing: "0.1em", minWidth: "1.5rem" }}>0{i + 1}</span>
-                        <span style={{ fontFamily: "var(--font-playfair)", fontSize: "clamp(1.2rem, 4vw, 1.5rem)", fontWeight: 400, color: "#fff", letterSpacing: "0.02em" }}>
-                          {item.label}
-                        </span>
+                        <span style={{ fontFamily: "var(--font-playfair)", fontSize: "clamp(1.2rem, 4vw, 1.5rem)", fontWeight: 400, color: "#fff", letterSpacing: "0.02em" }}>{item.label}</span>
                       </div>
-                      <svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none"
-                        style={{ transition: "transform 0.3s", transform: aboutExpanded ? "rotate(180deg)" : "none", color: "rgba(255,255,255,0.4)", flexShrink: 0 }}>
+                      <svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ transition: "transform 0.3s", transform: aboutExpanded ? "rotate(180deg)" : "none", color: "rgba(255,255,255,0.4)", flexShrink: 0 }}>
                         <path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
                       </svg>
                     </button>
@@ -264,9 +290,7 @@ export default function Navigation() {
                   >
                     <div style={{ display: "flex", alignItems: "center", gap: "1.25rem" }}>
                       <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.58rem", color: "var(--gold)", letterSpacing: "0.1em", minWidth: "1.5rem" }}>0{i + 1}</span>
-                      <span className="menu-item-label" style={{ fontFamily: "var(--font-playfair)", fontSize: "clamp(1.2rem, 4vw, 1.5rem)", fontWeight: 400, color: "#fff", letterSpacing: "0.02em", transition: "color 0.2s" }}>
-                        {item.label}
-                      </span>
+                      <span className="menu-item-label" style={{ fontFamily: "var(--font-playfair)", fontSize: "clamp(1.2rem, 4vw, 1.5rem)", fontWeight: 400, color: "#fff", letterSpacing: "0.02em", transition: "color 0.2s" }}>{item.label}</span>
                     </div>
                     <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ color: "rgba(255,255,255,0.2)", flexShrink: 0 }}>
                       <path d="M2 7H12M8 3L12 7L8 11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -315,7 +339,7 @@ export default function Navigation() {
                 aria-label={s.label}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.4)", textDecoration: "none", transition: "border-color 0.2s, color 0.2s" }}
+                style={{ width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "50%", color: "rgba(255,255,255,0.4)", textDecoration: "none", transition: "border-color 0.2s, color 0.2s" }}
                 onMouseOver={(e) => { const el = e.currentTarget; el.style.borderColor = "var(--gold)"; el.style.color = "var(--gold)"; }}
                 onMouseOut={(e)  => { const el = e.currentTarget; el.style.borderColor = "rgba(255,255,255,0.1)"; el.style.color = "rgba(255,255,255,0.4)"; }}
               >
@@ -327,16 +351,13 @@ export default function Navigation() {
       </div>
 
       <style>{`
-        @media (max-width: 768px) {
-          .desktop-nav { display: none !important; }
-          .nav-cta     { display: none !important; }
-        }
-        @media (min-width: 1025px) and (max-width: 1536px) {
-          .nav-inner { padding: 0 4rem !important; }
+        @media (max-width: 820px) {
+          .pill-desktop-nav { display: none !important; }
         }
         .menu-link:hover .menu-item-label { color: var(--gold) !important; }
         .menu-link:hover svg { color: rgba(201,168,76,0.6) !important; }
         .panel-cta:hover { background: #B8962A !important; }
+        .pill-cta:hover { background: #B8962A !important; }
       `}</style>
     </>
   );
