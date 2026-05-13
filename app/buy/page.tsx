@@ -1,7 +1,7 @@
-import PlaceholderPage from "../components/PlaceholderPage";
+import BuyPageClient from "../components/BuyPageClient";
 
 export const metadata = { title: "Buy | South Property" };
 
 export default function BuyPage() {
-  return <PlaceholderPage title="Buy" subtitle="Browse our curated selection of premium properties available for purchase." />;
+  return <BuyPageClient />;
 }
