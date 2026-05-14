@@ -247,7 +247,7 @@ export default function Enquiry() {
                     <div>
                       <div style={{
                         fontFamily: "var(--font-inter)",
-                        fontSize: "0.58rem",
+                        fontSize: "0.68rem",
                         letterSpacing: "0.18em",
                         textTransform: "uppercase",
                         color: "var(--gun-darkest)",
@@ -470,7 +470,7 @@ export default function Enquiry() {
         .eq-label {
           display: block;
           font-family: var(--font-inter);
-          font-size: 0.65rem;
+          font-size: 0.72rem;
           letter-spacing: 0.16em;
           text-transform: uppercase;
           color: var(--gun-darkest);
@@ -527,7 +527,7 @@ export default function Enquiry() {
           align-items: center;
           gap: 0.35rem;
           font-family: var(--font-inter);
-          font-size: 0.62rem;
+          font-size: 0.68rem;
           letter-spacing: 0.03em;
           color: rgba(210, 70, 70, 0.85);
           min-height: 1.4rem;
@@ -540,7 +540,7 @@ export default function Enquiry() {
         }
         .eq-select {
           cursor: pointer;
-          color: rgba(237,232,223,0.42);
+          color: rgba(210,220,232,0.42);
         }
         .eq-select-filled { color: var(--gun-darkest); }
         .eq-select option {
@@ -552,7 +552,7 @@ export default function Enquiry() {
           right: 0;
           top: 50%;
           transform: translateY(-50%);
-          color: rgba(237,232,223,0.52);
+          color: rgba(210,220,232,0.52);
           pointer-events: none;
           transition: color 0.25s, transform 0.25s;
         }

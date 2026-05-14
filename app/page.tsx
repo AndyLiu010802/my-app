@@ -1,8 +1,9 @@
+import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import Navigation from "./components/Navigation";
 import Hero from "./components/Hero";
 import ScrollSnap from "./components/ScrollSnap";
-import { getAllProperties, getHeroVideoUrl, getLocationImages } from "../lib/datocms";
+import { getAllProperties, getHeroVideoUrl, getLocationImages } from "../lib/content";
 
 const About = dynamic(() => import("./components/About"));
 const Properties = dynamic(() => import("./components/Properties"));
@@ -21,7 +22,7 @@ export default async function Home() {
   return (
     <>
       <ScrollSnap />
-      <Navigation />
+      <Suspense fallback={null}><Navigation /></Suspense>
       <main>
         <Hero videoUrl={heroVideoUrl} />
         <About />

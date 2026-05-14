@@ -1,31 +1,35 @@
 @import "tailwindcss";
 
 :root {
-  /* Backgrounds — warm dark hierarchy */
-  --bg-base:    #08090E;   /* page background */
-  --bg-section: #0B0F18;   /* dark sections */
-  --bg-card:    #131B27;   /* card / panel */
-  --bg-raised:  #1C2639;   /* elevated surface */
+  /* ── Gunmetal backgrounds — neutral grey, no blue cast ─────────────── */
+  --bg-base:    #0C0E11;   /* page background     */
+  --bg-section: #111316;   /* dark sections       */
+  --bg-card:    #1A1C22;   /* card / panel        */
+  --bg-raised:  #21252C;   /* elevated surface    */
 
-  /* Warm cream text — three legibility tiers */
-  --text-primary:   #EDE8DF;                /* headings / pure white moments */
-  --text-body:      rgba(237,232,223,0.72); /* body copy — clearly readable */
-  --text-secondary: rgba(237,232,223,0.52); /* secondary info */
-  --text-muted:     rgba(237,232,223,0.38); /* labels / decorative only */
+  /* ── Cool silver text — three legibility tiers ──────────────────────── */
+  --text-primary:   #EBF0F5;                   /* headings / bright moments  */
+  --text-body:      rgba(210,220,232,0.80);    /* body copy — clearly readable */
+  --text-secondary: rgba(188,202,218,0.56);    /* secondary info             */
+  --text-muted:     rgba(165,182,200,0.38);    /* labels / decorative only   */
 
-  /* Gold accent */
+  /* ── Warm gold — the contrasting accent (对撞色 against cool grey) ──── */
   --gold:       #C9A84C;
-  --gold-light: #DFC07A;
-  --gold-dim:   rgba(201,168,76,0.22);   /* borders */
-  --gold-fill:  rgba(201,168,76,0.10);   /* tinted backgrounds */
+  --gold-light: #E2C070;
+  --gold-dim:   rgba(201,168,76,0.22);
+  --gold-fill:  rgba(201,168,76,0.10);
 
-  /* Borders */
-  --border-gold:   rgba(201,168,76,0.25);
-  --border-strong: rgba(255,255,255,0.12);
-  --border-mid:    rgba(255,255,255,0.07);
-  --border-subtle: rgba(255,255,255,0.04);
+  /* ── Chrome silver — metallic accent ────────────────────────────────── */
+  --silver:     #94AABF;
+  --silver-dim: rgba(148,170,191,0.20);
 
-  /* Legacy — preserved for existing components */
+  /* ── Borders (chrome quality) ───────────────────────────────────────── */
+  --border-gold:   rgba(201,168,76,0.28);
+  --border-strong: rgba(180,195,212,0.18);
+  --border-mid:    rgba(155,172,192,0.10);
+  --border-subtle: rgba(130,150,172,0.06);
+
+  /* ── Legacy — preserved for existing components ─────────────────────── */
   --gun-darkest: #1c2128;
   --gun-dark: #2d3440;
   --gun-mid: #4b5563;
@@ -34,8 +38,8 @@
   --cream: #f5f4f0;
   --white: #ffffff;
   --gold-light-old: #e8d5a3;
-  --background: var(--cream);
-  --foreground: var(--gun-darkest);
+  --background: var(--bg-base);
+  --foreground: var(--text-primary);
 }
 
 @theme inline {
@@ -62,8 +66,8 @@ html {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--bg-base);
+  color: var(--text-primary);
   font-family: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -137,12 +141,13 @@ h4 {
   border-color: var(--white);
 }
 
+/* Gold button — warm gradient for maximum 对撞色 contrast on gunmetal */
 .btn-gold {
   width: 180px;
   height: 50px;
   display: inline-block;
   padding: 0.875rem 2.5rem;
-  background: linear-gradient(145deg, #ffd20b, #554a32);
+  background: linear-gradient(145deg, #E0C060, #B08020);
   color: var(--white);
   font-size: 0.75rem;
   font-weight: 500;
@@ -155,14 +160,14 @@ h4 {
 }
 
 .btn-gold:hover {
-  background: #e6bf42;
-  border-color: #e6bf42;
+  background: linear-gradient(145deg, #C9A84C, #9A7828);
+  border-color: #C9A84C;
 }
 
 .cursor-box {
   width: 180px;
   height: 50px;
-  background-color: #333;
+  background: linear-gradient(145deg, var(--bg-raised), var(--bg-card));
   display: flex;
   justify-content: center;
   align-items: center;
@@ -179,7 +184,7 @@ h4 {
   position: absolute;
   width: 100%;
   height: 100%;
-  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.08), transparent);
   top: -100%;
   left: -100%;
   transition: all 0.5s ease;
@@ -212,7 +217,7 @@ label[for],
   letter-spacing: 0.18em;
   text-transform: uppercase;
   text-decoration: none;
-  color: var(--white);
+  color: var(--text-primary);
   transition: color 0.2s;
 }
 
@@ -258,4 +263,24 @@ label[for],
 .animate-delay-600 {
   animation-delay: 0.6s;
   opacity: 0;
+}
+
+/* ── Custom scrollbar — thin gold strip ───────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 100px;
+  min-height: 40px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-light);
+}
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold) transparent;
 }

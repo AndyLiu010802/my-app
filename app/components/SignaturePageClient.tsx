@@ -87,7 +87,7 @@ function SignatureCard({ p, index, reducedMotion }: { p: Property; index: number
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        background: "#131B27",
+        background: "#1A1C22",
         border: `1px solid ${hovered ? "rgba(201,168,76,0.35)" : "rgba(255,255,255,0.06)"}`,
         borderRadius: "12px",
         overflow: "hidden",
@@ -128,7 +128,7 @@ function SignatureCard({ p, index, reducedMotion }: { p: Property; index: number
       <div style={{ padding: "1.5rem 1.6rem", flex: 1, display: "flex", flexDirection: "column" }}>
         <p style={{ fontFamily: "var(--font-playfair)", fontSize: "1.4rem", fontWeight: 400, color: "var(--gold)", letterSpacing: "0.01em", marginBottom: "0.4rem", lineHeight: 1 }}>{p.price}</p>
         <h3 style={{ fontFamily: "var(--font-playfair)", fontSize: "0.95rem", fontWeight: 400, color: "#fff", letterSpacing: "0.02em", marginBottom: "0.35rem", lineHeight: 1.45 }}>{p.title}</h3>
-        <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.7rem", color: "rgba(237,232,223,0.68)", marginBottom: "1rem", lineHeight: 1.5 }}>{p.address}, {p.suburb} VIC</p>
+        <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.7rem", color: "rgba(210,220,232,0.68)", marginBottom: "1rem", lineHeight: 1.5 }}>{p.address}, {p.suburb} VIC</p>
         <div style={{ display: "flex", borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "0.9rem", marginTop: "auto" }}>
           {[
             { Icon: BedIcon,  v: p.beds,    l: "Beds"  },
@@ -137,9 +137,9 @@ function SignatureCard({ p, index, reducedMotion }: { p: Property; index: number
             { Icon: SqmIcon,  v: p.sqm,     l: "m²"    },
           ].map(({ Icon, v, l }, si) => (
             <div key={l} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "0.2rem", borderRight: si < 3 ? "1px solid rgba(255,255,255,0.06)" : "none" }}>
-              <div style={{ color: "rgba(237,232,223,0.52)" }}><Icon /></div>
+              <div style={{ color: "rgba(210,220,232,0.52)" }}><Icon /></div>
               <span style={{ fontFamily: "var(--font-playfair)", fontSize: "0.9rem", color: "#fff" }}>{v}</span>
-              <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.48rem", color: "rgba(237,232,223,0.45)", letterSpacing: "0.1em", textTransform: "uppercase" }}>{l}</span>
+              <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.48rem", color: "rgba(210,220,232,0.45)", letterSpacing: "0.1em", textTransform: "uppercase" }}>{l}</span>
             </div>
           ))}
         </div>
@@ -183,9 +183,9 @@ function LargeFeatureCard({ p, reducedMotion }: { p: Property; reducedMotion: bo
 
       <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "1.4rem 1.5rem", background: "rgba(10,14,20,0.72)", backdropFilter: "blur(14px)", borderTop: "1px solid rgba(255,255,255,0.07)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.35rem" }}>
-          <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.48rem", color: "rgba(237,232,223,0.68)", letterSpacing: "0.2em", textTransform: "uppercase" }}>{p.type}</span>
-          <span aria-hidden="true" style={{ color: "rgba(237,232,223,0.35)" }}>·</span>
-          <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.48rem", color: "rgba(237,232,223,0.68)", letterSpacing: "0.12em", textTransform: "uppercase" }}>{p.sqm} m²</span>
+          <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.48rem", color: "rgba(210,220,232,0.68)", letterSpacing: "0.2em", textTransform: "uppercase" }}>{p.type}</span>
+          <span aria-hidden="true" style={{ color: "rgba(210,220,232,0.35)" }}>·</span>
+          <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.48rem", color: "rgba(210,220,232,0.68)", letterSpacing: "0.12em", textTransform: "uppercase" }}>{p.sqm} m²</span>
         </div>
         <p style={{ fontFamily: "var(--font-playfair)", fontSize: "1.35rem", fontWeight: 400, color: "var(--gold)", marginBottom: "0.3rem", lineHeight: 1 }}>{p.price}</p>
         <p style={{ fontFamily: "var(--font-inter)", fontSize: "0.65rem", color: "rgba(255,255,255,0.55)" }}>{p.address}, {p.suburb}</p>
@@ -218,7 +218,7 @@ export default function SignaturePageClient() {
   const rm = reducedMotion.current;
 
   return (
-    <div style={{ background: "#08090E", minHeight: "100vh", color: "#fff" }}>
+    <div style={{ background: "#0C0E11", minHeight: "100vh", color: "#fff" }}>
       <Navigation />
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
@@ -244,7 +244,7 @@ export default function SignaturePageClient() {
             {[{ v: "9", l: "Curated Listings" }, { v: "3", l: "Prestige Tags" }, { v: "$4.3M", l: "Avg. Price" }].map(({ v, l }) => (
               <div key={l} style={{ display: "flex", flexDirection: "column", gap: "0.2rem" }}>
                 <span style={{ fontFamily: "var(--font-playfair)", fontSize: "clamp(1.4rem, 3vw, 2rem)", color: "#fff", fontWeight: 400, lineHeight: 1 }}>{v}</span>
-                <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.52rem", color: "rgba(237,232,223,0.62)", letterSpacing: "0.2em", textTransform: "uppercase" }}>{l}</span>
+                <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.52rem", color: "rgba(210,220,232,0.62)", letterSpacing: "0.2em", textTransform: "uppercase" }}>{l}</span>
               </div>
             ))}
           </div>
@@ -254,10 +254,10 @@ export default function SignaturePageClient() {
       {/* ── Breadcrumb ───────────────────────────────────────────────────── */}
       <nav aria-label="Breadcrumb" style={{ padding: "1.25rem clamp(1.5rem, 6vw, 5rem)", borderBottom: "1px solid rgba(255,255,255,0.05)", maxWidth: "1400px", margin: "0 auto" }}>
         <ol style={{ listStyle: "none", display: "flex", gap: "0.5rem", alignItems: "center" }}>
-          <li><Link href="/" style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", color: "rgba(237,232,223,0.52)", textDecoration: "none", letterSpacing: "0.1em" }}>Home</Link></li>
-          <li aria-hidden="true" style={{ color: "rgba(237,232,223,0.35)", fontSize: "0.6rem" }}>/</li>
-          <li><Link href="/buy" style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", color: "rgba(237,232,223,0.52)", textDecoration: "none", letterSpacing: "0.1em" }}>Buy</Link></li>
-          <li aria-hidden="true" style={{ color: "rgba(237,232,223,0.35)", fontSize: "0.6rem" }}>/</li>
+          <li><Link href="/" style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", color: "rgba(210,220,232,0.52)", textDecoration: "none", letterSpacing: "0.1em" }}>Home</Link></li>
+          <li aria-hidden="true" style={{ color: "rgba(210,220,232,0.35)", fontSize: "0.6rem" }}>/</li>
+          <li><Link href="/buy" style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", color: "rgba(210,220,232,0.52)", textDecoration: "none", letterSpacing: "0.1em" }}>Buy</Link></li>
+          <li aria-hidden="true" style={{ color: "rgba(210,220,232,0.35)", fontSize: "0.6rem" }}>/</li>
           <li><span style={{ fontFamily: "var(--font-inter)", fontSize: "0.6rem", color: "var(--gold)", letterSpacing: "0.1em" }} aria-current="page">Signature</span></li>
         </ol>
       </nav>
@@ -269,7 +269,7 @@ export default function SignaturePageClient() {
             <h2 id="sig-featured-heading" style={{ fontFamily: "var(--font-playfair)", fontSize: "clamp(1.2rem, 2.5vw, 1.6rem)", fontWeight: 400, color: "#fff" }}>
               Prestige <span style={{ color: "var(--gold)", fontStyle: "italic" }}>Highlights</span>
             </h2>
-            <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.58rem", color: "rgba(237,232,223,0.42)", letterSpacing: "0.15em" }}>3 properties</span>
+            <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.58rem", color: "rgba(210,220,232,0.42)", letterSpacing: "0.15em" }}>3 properties</span>
           </div>
           <div className="sig-highlights-grid">
             {[PROPERTIES[0], PROPERTIES[4], PROPERTIES[8]].map((p, i) => (
@@ -289,7 +289,7 @@ export default function SignaturePageClient() {
             <h2 id="sig-all-heading" style={{ fontFamily: "var(--font-playfair)", fontSize: "clamp(1.2rem, 2.5vw, 1.6rem)", fontWeight: 400, color: "#fff" }}>
               All <span style={{ color: "var(--gold)", fontStyle: "italic" }}>Listings</span>
             </h2>
-            <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.58rem", color: "rgba(237,232,223,0.42)", letterSpacing: "0.15em" }}>{PROPERTIES.length} properties</span>
+            <span style={{ fontFamily: "var(--font-inter)", fontSize: "0.58rem", color: "rgba(210,220,232,0.42)", letterSpacing: "0.15em" }}>{PROPERTIES.length} properties</span>
           </div>
           <div className="sig-grid">
             {PROPERTIES.map((p, i) => (

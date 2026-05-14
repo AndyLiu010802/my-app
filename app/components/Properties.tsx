@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRef, useEffect, useState } from "react";
-import type { Property } from "../../lib/datocms";
+import type { Property } from "../../lib/content";
 
 const CARD_W = 460;
 const GAP = 24;

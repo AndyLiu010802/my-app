@@ -1,14 +1,15 @@
+import { Suspense } from "react";
 import Navigation from "./Navigation";
 import Footer from "./Footer";
 
 export default function PlaceholderPage({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
     <>
-      <Navigation />
+      <Suspense fallback={null}><Navigation /></Suspense>
       <main
         style={{
           minHeight: "100vh",
-          background: "#08090E",
+          background: "#0C0E11",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -55,7 +56,7 @@ export default function PlaceholderPage({ title, subtitle }: { title: string; su
             style={{
               fontFamily: "var(--font-inter)",
               fontSize: "0.9rem",
-              color: "rgba(237,232,223,0.65)",
+              color: "rgba(210,220,232,0.65)",
               textAlign: "center",
               maxWidth: "400px",
               lineHeight: 1.8,
@@ -71,7 +72,7 @@ export default function PlaceholderPage({ title, subtitle }: { title: string; su
             fontSize: "0.65rem",
             letterSpacing: "0.2em",
             textTransform: "uppercase",
-            color: "rgba(237,232,223,0.38)",
+            color: "rgba(210,220,232,0.38)",
           }}
         >
           Coming Soon
